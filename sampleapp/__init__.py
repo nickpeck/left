@@ -1,0 +1,1 @@
+"""Example of a very simple CRUD app to manage pages"""

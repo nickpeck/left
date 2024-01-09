@@ -1,0 +1,6 @@
+flet==0.18.0
+dataclasses_json==0.6.3
+slugify==0.0.1
+tinydb
+tinyrecord
+setuptools
