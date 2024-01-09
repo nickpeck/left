@@ -14,7 +14,6 @@ formatter = logging.Formatter(
 handler.setFormatter(formatter)
 logger.addHandler(handler)
 
-
 services = {
      "database": TinyDBService("db.json")
 }
