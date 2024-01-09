@@ -12,6 +12,8 @@ class MyRouter(FTRouter):
                 PageController(self.page).index()
             case ['page', 'create']:
                 PageController(self.page).create()
+            case ['page', 'view', uid]:
+                PageController(self.page).view(uid)
             case ['page', 'update', uid]:
                 PageController(self.page).update(uid)
             case ['page', 'delete', uid]:

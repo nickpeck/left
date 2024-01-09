@@ -15,13 +15,11 @@ class TinyDBService(DocumentRecordService):
             self.db.insert(kwargs)
 
     def read(self, keyname: str, offset: Optional[int] = None, limit: Optional[int] = None, **kwargs) -> List[Dict]:
-        if len(kwargs.items()) == 0:
-            return self.db.all()
-        else:
-            condition = where(keyname).exists()
-            for k, v in kwargs.items():
-                condition = condition & (where(k) == v)
-            items = self.db.search(condition)
+        print(keyname, offset, limit, kwargs)
+        condition = where(keyname).exists()
+        for k, v in kwargs.items():
+            condition = condition & (where(k) == v)
+        items = self.db.search(condition)
         if offset is not None:
             if limit is not None:
                 return items[offset: offset+limit]

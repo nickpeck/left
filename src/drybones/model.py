@@ -33,7 +33,8 @@ class FTModel:
     @classmethod
     def get(cls, key: str) -> "Model":
         """Return the first object with the matching key"""
-        record = FTApp.get_app().services.get("database").read({cls.__pk__: key})[0]
+        query = {cls.__pk__: key}
+        record = FTApp.get_app().services.get("database").read(keyname=cls.__pk__, **query)[0]
         return cls.from_dict(record)
 
     @classmethod
