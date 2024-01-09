@@ -3,7 +3,7 @@ from time import sleep
 from drybones import FTController
 
 from .models import Page
-from .views import ListPages, CreatePage, UpdatePage
+from .views import ListPagesView, CreatePageView, UpdatePageView
 
 
 def validate_page(title, text):
@@ -31,7 +31,7 @@ class PageController(FTController):
         def create_page():
             self.page.go(f"/page/create")
 
-        view = ListPages(delete_page=delete_page, edit_page=edit_page, create_page=create_page)
+        view = ListPagesView(delete_page=delete_page, edit_page=edit_page, create_page=create_page)
         self._mount_view(view)
         sleep(2)  # just putting this here to simulate a loading wait - user should see the spinner!
         view.update_state(pages=pages, is_loading=False)
@@ -45,7 +45,7 @@ class PageController(FTController):
             Page(**payload).upsert()
             self.page.go("/")
 
-        view = CreatePage(do_validate=do_validate, do_submit=do_submit)
+        view = CreatePageView(do_validate=do_validate, do_submit=do_submit)
         self._mount_view(view)
 
     def update(self, uid):
@@ -60,6 +60,6 @@ class PageController(FTController):
             Page(**payload).upsert()
             self.page.go("/")
 
-        view = UpdatePage(do_validate=do_validate, do_submit=do_submit)
+        view = UpdatePageView(do_validate=do_validate, do_submit=do_submit)
         self._mount_view(view)
         view.update_state(**page.to_dict())

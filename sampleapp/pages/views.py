@@ -4,14 +4,14 @@ from drybones.view import FTView
 from drybones.sharedcomponents import loading_spinner
 
 
-class PageBase(FTView):
+class PageBaseView(FTView):
     def get_appbar(self):
         return ft.AppBar(
             title=ft.Text(self.title),
             actions=[])
 
 
-class ListPages(PageBase):
+class ListPagesView(PageBaseView):
     def __init__(self, delete_page, edit_page, create_page):
         self.delete_page = delete_page
         self.edit_page = edit_page
@@ -71,7 +71,7 @@ class ListPages(PageBase):
         return controls
 
 
-class CreatePage(PageBase):
+class CreatePageView(PageBaseView):
     def __init__(self, do_validate, do_submit):
         self.state = {"title": "", "text": "", "validates": False, "feedback": None}
         self.feedback = ft.Text("", color=ft.colors.RED)
@@ -104,7 +104,7 @@ class CreatePage(PageBase):
         ]
 
 
-class UpdatePage(CreatePage):
+class UpdatePageView(CreatePageView):
     @property
     def title(self):
         return "Update a page"
