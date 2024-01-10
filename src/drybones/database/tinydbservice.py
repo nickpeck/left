@@ -15,7 +15,6 @@ class TinyDBService(DocumentRecordService):
             self.db.insert(kwargs)
 
     def read(self, keyname: str, offset: Optional[int] = None, limit: Optional[int] = None, **kwargs) -> List[Dict]:
-        print(keyname, offset, limit, kwargs)
         condition = where(keyname).exists()
         for k, v in kwargs.items():
             condition = condition & (where(k) == v)

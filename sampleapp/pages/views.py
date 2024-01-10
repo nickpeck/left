@@ -13,11 +13,11 @@ class PageBaseView(FTView):
 
 
 class ListPagesView(PageBaseView):
-    def __init__(self, delete_page, edit_page, create_page, view_page):
+    def __init__(self, delete_page, go_edit_page, go_create_page, go_view_page):
         self.delete_page = delete_page
-        self.edit_page = edit_page
-        self.create_page = create_page
-        self.view_page = view_page
+        self.go_edit_page = go_edit_page
+        self.go_create_page = go_create_page
+        self.go_view_page = go_view_page
         self.state = {"is_loading": True, "pages": []}
 
     @property
@@ -60,9 +60,9 @@ class ListPagesView(PageBaseView):
                     ft.IconButton(ft.icons.DELETE,
                                   on_click=delete_prompt),
                     ft.IconButton(ft.icons.EDIT,
-                                  on_click=lambda e: self.edit_page(page.key)),
+                                  on_click=lambda e: self.go_edit_page(page.key)),
                     ft.IconButton(ft.icons.PLAY_ARROW,
-                                  on_click=lambda e: self.view_page(page.key))
+                                  on_click=lambda e: self.go_view_page(page.key))
                 ])
             ])
         )
@@ -71,7 +71,7 @@ class ListPagesView(PageBaseView):
     def controls(self):
         if self.state.get("is_loading", False):
             return [loading_spinner(size=50)]
-        controls = [ft.ElevatedButton("Create a page", on_click=lambda e: self.create_page())]
+        controls = [ft.ElevatedButton("Create a page", on_click=lambda e: self.go_create_page())]
         for page in self.state.get("pages", []):
             controls.append(self.make_page_card(page))
         return controls
@@ -83,12 +83,14 @@ class CreatePageView(PageBaseView):
         self.feedback = ft.Text("", color=ft.colors.RED)
         self.title_input = ft.TextField(label="The title",
                                         on_blur=lambda e: do_validate(
+                                            self,
                                             title=self.title_input.value, text=self.text_input.value))
         self.text_input = ft.TextField(label="The title",
                                        multiline=True,
                                        height=200,
                                        min_lines=10,
                                        on_blur=lambda e: do_validate(
+                                            self,
                                             title=self.title_input.value, text=self.text_input.value))
         self.submit = ft.ElevatedButton("Submit", disabled=True,
                                         on_click=lambda e: do_submit(
