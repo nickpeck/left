@@ -23,6 +23,8 @@ class TinyDBService(DocumentRecordService):
             if limit is not None:
                 return items[offset: offset+limit]
             return items[offset:]
+        elif limit is not None:
+            return items[:limit]
         return items
 
     def update(self, uid, keyname="uid", **kwargs):
