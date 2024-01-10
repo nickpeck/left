@@ -1,6 +1,6 @@
-from .app import FTApp
-from .router import FTRouter
+from .app import LeftApp
+from .router import LeftRouter
 from .model import FTModel
-from .view import FTView
-from .controller import FTController
+from .view import LeftView
+from .controller import LeftController
 from . import sharedcomponents as shared

@@ -1,7 +1,7 @@
 import logging
 import sys
 
-from left import FTApp
+from left import LeftApp
 from left.database.tinydbservice import TinyDBService
 from .router import MyRouter
 
@@ -18,4 +18,4 @@ services = {
      "database": TinyDBService("db.json")
 }
 
-FTApp(router_cls=MyRouter, default_title="Welcome to my app!", services=services)
+LeftApp(router_cls=MyRouter, default_title="Welcome to my app!", services=services)

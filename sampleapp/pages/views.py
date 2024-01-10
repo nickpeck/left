@@ -1,10 +1,10 @@
 import flet as ft
 
-from left.view import FTView
+from left.view import LeftView
 from left.sharedcomponents import loading_spinner
 
 
-class PageBaseView(FTView):
+class PageBaseView(LeftView):
     @property
     def appbar(self):
         return ft.AppBar(title=ft.Text(self.title), actions=[])

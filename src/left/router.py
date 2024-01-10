@@ -4,7 +4,7 @@ from typing import List
 import flet as ft
 
 
-class FTRouter:
+class LeftRouter:
     """Single-page application router. Use this to load different views as the page route changes."""
     def __init__(self, page):
         self.page = page

@@ -1,6 +1,6 @@
 # LEFT, a Minimalist Flet Framework
 
-I have enjoyed creating a number of apps using the flet library, so I decided to organize my common boilerplate 
+I have enjoyed creating a number of apps using the flet library, so I decided to organise my common boilerplate 
 code into this small framework.
 
 I have deliberately kept things extremely simple, leaving it free for the end user to leverage whatever kind of data/service

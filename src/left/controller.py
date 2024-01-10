@@ -3,7 +3,7 @@ import logging
 import flet as ft
 
 
-class FTController:
+class LeftController:
     def __init__(self, page: ft.Page):
         self.page = page
 

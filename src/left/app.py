@@ -3,20 +3,20 @@ from typing import Optional
 
 import flet as ft
 
-from .router import FTRouter
+from .router import LeftRouter
 
 
-class FTApp:
+class LeftApp:
     __instance__ = None
 
     @staticmethod
     def get_app():
-        return FTApp.__instance__
+        return LeftApp.__instance__
 
-    def __init__(self, router_cls: FTRouter = FTRouter, services: Optional[dict] = None, **kwargs):
-        if FTApp.__instance__ is not None:
+    def __init__(self, router_cls: LeftRouter = LeftRouter, services: Optional[dict] = None, **kwargs):
+        if LeftApp.__instance__ is not None:
             raise Exception("App already initialized!")
-        FTApp.__instance__ = self
+        LeftApp.__instance__ = self
         self.services = {}
         if services is not None:
             self.services.update(services)

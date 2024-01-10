@@ -3,7 +3,7 @@ from typing import Optional, List
 import flet as ft
 
 
-class FTView:
+class LeftView:
     @property
     def appbar(self) -> Optional[ft.AppBar]:
         """return how you want the app bar to appear, or None. Called each time the state is updated"""

@@ -1,5 +1,5 @@
 """Some small functions we can share between controller methods"""
-from left.view import FTView
+from left.view import LeftView
 from left.helpers import redirect
 
 
@@ -13,7 +13,7 @@ def validate_page(title, text):
         return True, ""
 
 
-def do_validate(view: FTView, **kwargs):
+def do_validate(view: LeftView, **kwargs):
     """Validate, and update the view with the result"""
     validates, msg = validate_page(
         title=kwargs.get("title", ""),

@@ -1,5 +1,5 @@
 from typing import List, Callable, Dict, Any
-from .app import FTApp
+from .app import LeftApp
 
 
 def make_props(*functions):
@@ -9,4 +9,4 @@ def make_props(*functions):
 
 
 def redirect(route: str):
-    FTApp.get_app().page.go(route)
+    LeftApp.get_app().page.go(route)

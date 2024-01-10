@@ -1,6 +1,6 @@
 from time import sleep
 
-from left import FTController
+from left import LeftController
 from left.helpers import make_props, redirect
 
 from .models import Page
@@ -8,7 +8,7 @@ from .views import ListPagesView, CreatePageView, UpdatePageView, ReadPageView
 from .actions import go_create_page, go_view_page, go_edit_page, do_validate
 
 
-class PageController(FTController):
+class PageController(LeftController):
     def index(self):
         has_visited = self.page.session.get("has_visited")
         if not has_visited:

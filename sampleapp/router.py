@@ -1,11 +1,11 @@
 from typing import List
 
-from left import FTRouter
+from left import LeftRouter
 
 from .pages.controller import PageController
 
 
-class MyRouter(FTRouter):
+class MyRouter(LeftRouter):
     def on_route_change(self, parts: List[str]):
         match parts:
             case ['']:
