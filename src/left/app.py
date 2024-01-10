@@ -23,7 +23,7 @@ class LeftApp:
         self.page = None
         self.router_cls = router_cls
         self.opts = kwargs
-        ft.app(target=self, view=self.opts.get("flet_mode", ft.AppView.FLET_APP))
+        self.ft_app = ft.app(target=self, view=self.opts.get("flet_mode", ft.AppView.FLET_APP))
 
     def __call__(self, page: ft.Page):
         self.page = page

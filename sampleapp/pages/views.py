@@ -101,8 +101,9 @@ class CreatePageView(PageBaseView):
 
     def update_state(self, **new_state):
         self.state.update(new_state)
-        self.feedback.value = self.state["feedback"] if not self.state["validates"] else ""
-        self.submit.disabled = not self.state["validates"]
+        validates = self.state.get("validates", False)
+        self.feedback.value = self.state.get("feedback", "") if not validates else ""
+        self.submit.disabled = not validates
 
     @property
     def controls(self):
@@ -121,10 +122,11 @@ class UpdatePageView(CreatePageView):
 
     def update_state(self, **new_state):
         self.state.update(new_state)
-        self.title_input.value = self.state["title"]
-        self.text_input.value = self.state["text"]
-        self.feedback.value = self.state["feedback"] if not self.state["validates"] else ""
-        self.submit.disabled = not self.state["validates"]
+        self.title_input.value = self.state.get("title", "")
+        self.text_input.value = self.state.get("text", "")
+        validates = self.state.get("validates", False)
+        self.feedback.value = self.state.get("feedback", "") if not validates else ""
+        self.submit.disabled = not validates
 
 
 class ReadPageView(PageBaseView):
@@ -135,11 +137,11 @@ class ReadPageView(PageBaseView):
 
     @property
     def title(self):
-        return self.state["title"]
+        return self.state.get("title", "")
 
     def update_state(self, **new_state):
         self.state.update(new_state)
-        self.text_view.value = self.state["text"]
+        self.text_view.value = self.state.get("text", "")
 
     @property
     def controls(self):
