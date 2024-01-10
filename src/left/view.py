@@ -7,7 +7,7 @@ class LeftView:
     @property
     def appbar(self) -> Optional[ft.AppBar]:
         """return how you want the app bar to appear, or None. Called each time the state is updated"""
-        return ft.AppBar([ft.Text("The Page Title")])
+        return ft.AppBar()
 
     @property
     def controls(self) -> List[ft.Container]:
