@@ -2,7 +2,7 @@ import setuptools
 
 
 setuptools.setup(
-    name='drybones',
+    name='left',
     version='0.0.1',
     license='LICENSE',
     author='nickpeck',

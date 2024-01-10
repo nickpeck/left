@@ -1,6 +1,6 @@
 """Some small functions we can share between controller methods"""
-from drybones.view import FTView
-from drybones.helpers import redirect
+from left.view import FTView
+from left.helpers import redirect
 
 
 def validate_page(title, text):

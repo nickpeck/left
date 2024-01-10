@@ -1,8 +1,8 @@
 import logging
 import sys
 
-from drybones import FTApp
-from drybones.database.tinydbservice import TinyDBService
+from left import FTApp
+from left.database.tinydbservice import TinyDBService
 from .router import MyRouter
 
 logger = logging.getLogger()

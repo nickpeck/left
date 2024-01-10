@@ -1,6 +1,6 @@
 from typing import List
 
-from drybones import FTRouter
+from left import FTRouter
 
 from .pages.controller import PageController
 

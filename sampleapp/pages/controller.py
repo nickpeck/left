@@ -1,7 +1,7 @@
 from time import sleep
 
-from drybones import FTController
-from drybones.helpers import make_props, redirect
+from left import FTController
+from left.helpers import make_props, redirect
 
 from .models import Page
 from .views import ListPagesView, CreatePageView, UpdatePageView, ReadPageView

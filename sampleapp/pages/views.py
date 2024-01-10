@@ -1,15 +1,13 @@
 import flet as ft
 
-from drybones.view import FTView
-from drybones.sharedcomponents import loading_spinner
+from left.view import FTView
+from left.sharedcomponents import loading_spinner
 
 
 class PageBaseView(FTView):
     @property
     def appbar(self):
-        return ft.AppBar(
-            title=ft.Text(self.title),
-            actions=[])
+        return ft.AppBar(title=ft.Text(self.title), actions=[])
 
 
 class ListPagesView(PageBaseView):
@@ -35,17 +33,17 @@ class ListPagesView(PageBaseView):
         self.state.update(new_state)
 
     def make_page_card(self, page):
-        def delete_prompt(e):
-            def close_and_delete(x):
-                x.page.close_dialog()
+        def prompt_and_delete(e):
+            def delete_and_close(x):
                 self.delete_page(page.key)
+                x.page.close_dialog()
 
             dlg_modal = ft.AlertDialog(
                 modal=True,
                 title=ft.Text("Please confirm"),
                 content=ft.Text("Do you really want to delete this page?"),
                 actions=[
-                    ft.ElevatedButton("Yes", on_click=close_and_delete),
+                    ft.ElevatedButton("Yes", on_click=delete_and_close),
                     ft.ElevatedButton("No", on_click=lambda x: x.page.close_dialog()),
                 ],
                 actions_alignment=ft.MainAxisAlignment.END
@@ -58,7 +56,7 @@ class ListPagesView(PageBaseView):
                 ft.Text(page.short_text),
                 ft.Row([
                     ft.IconButton(ft.icons.DELETE,
-                                  on_click=delete_prompt),
+                                  on_click=prompt_and_delete),
                     ft.IconButton(ft.icons.EDIT,
                                   on_click=lambda e: self.go_edit_page(page.key)),
                     ft.IconButton(ft.icons.PLAY_ARROW,
