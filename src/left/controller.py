@@ -32,12 +32,12 @@ class LeftController:
                 ft_view.update()
             return method_wrap
 
-        def _wrap(wrapper, instance, method):
-            class_method = getattr(instance, method)
+        def _wrap(wrapper, instance, method_name):
+            class_method = getattr(instance, method_name)
             wrapped_method = wrapper(class_method)
-            setattr(instance, method, wrapped_method)
+            setattr(instance, method_name, wrapped_method)
 
-        _wrap(method_wrapper, view, "update_state")
+        _wrap(method_wrapper, view, view.update_state.__name__)
         self.page.views.append(ft_view)
         self.page.update()
         logging.getLogger().debug(f"Done mounting view")
