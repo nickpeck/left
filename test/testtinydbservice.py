@@ -10,7 +10,7 @@ class TestTinyDBService(TestCase):
     DB = TinyDBService(DB_FILE)
 
     def setUp(self) -> None:
-        with transaction(self.DB.db) as tr:
+        with transaction(self.DB.db):
             self.DB.db.truncate()
 
     def test_can_create_record(self):

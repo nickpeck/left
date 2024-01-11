@@ -25,10 +25,10 @@ class TestRouter(unittest.TestCase):
         app(page)
 
     @mock.patch("flet.app")
-    def test_cannot_initialize_twice(self, app):
+    def test_cannot_initialize_twice(self, _app):
         LeftRouter.on_route_change = mock.Mock()
         LeftApp(router=LeftRouter)
-        with self.assertRaises(Exception) as e:
+        with self.assertRaises(Exception):
             LeftApp(router=LeftRouter)
 
 

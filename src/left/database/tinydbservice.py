@@ -11,7 +11,7 @@ class TinyDBService(DocumentRecordService):
         self.db = TinyDB(db_file)
 
     def create(self, **kwargs) -> str:
-        with transaction(self.db) as _tr:
+        with transaction(self.db):
             self.db.insert(kwargs)
 
     def read(self, keyname: str, offset: Optional[int] = None, limit: Optional[int] = None, **kwargs) -> List[Dict]:
@@ -28,11 +28,11 @@ class TinyDBService(DocumentRecordService):
         return items
 
     def update(self, uid, keyname="uid", **kwargs):
-        with transaction(self.db) as _tr:
+        with transaction(self.db):
             self.db.update(
                 kwargs,
                 where(keyname) == uid)
 
     def destroy(self, uid, keyname="uid"):
-        with transaction(self.db) as _tr:
+        with transaction(self.db):
             self.db.remove(where(keyname) == uid)

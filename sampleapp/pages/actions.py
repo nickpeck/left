@@ -34,4 +34,4 @@ def go_view_page(uid: str):
 
 
 def go_create_page():
-    redirect(f"/page/create")
+    redirect("/page/create")

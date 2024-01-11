@@ -31,7 +31,7 @@ class LeftApp:
         self.page.theme_mode = self.opts.get("default_theme_mode", ft.ThemeMode.DARK)
         self.page.padding = self.opts.get("default_page_padding", 50)
         self.page.update()
-        logging.getLogger().info(f"App is initialized and ready to serve")
+        logging.getLogger().info("App is initialized and ready to serve")
         self.start_routing()
 
     def start_routing(self):
