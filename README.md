@@ -1,14 +1,14 @@
 # LEFT, a Minimalist Flet Framework
 
-I have enjoyed creating a number of apps using the flet library, so I decided to organise my common boilerplate 
-code into this small framework.
+A very simple framework using the flet library - the bare boilerplate code I use to get some apps up and running.
 
-I have deliberately kept things extremely simple, leaving it free for the end user to leverage whatever kind of data/service
-layer they see fit. The example uses tinydb, although it is set up to be fairly agnostic and could be quickly re-worked 
-to another database engine. There is some React-influenced state management in the example view implementation, 
-but once again it's up to the end user to freely organise the presentation layer as required.
+I have deliberately kept things extremely simple - it doesn't attempt to hide the flet internals,
+ very little enforced convention/configuration, and only a tiny reliance on some 'magic' in 
+ the React-influenced state management in the view layer (even this is not mandatory).
 
-See sampleapp/ for a simple CRUD-app example
+Its up to the end user to organise their implementation in a consistent and logical manner that works for them.
+
+See sampleapp/ for a simple CRUD-app example.
 
 dev usage:
 ~~~
