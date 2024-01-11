@@ -13,11 +13,11 @@ class LeftRouter:
         self.page.go(self.page.route)
 
     def _handle_route_change(self, r: ft.RouteChangeEvent):
-        logging.getLogger().info(f"handle_route_change: {r.page.route}")
+        logging.getLogger().info(f"handle_route_change: {r.route}")
         if len(self.page.views) > 0:
             if self.page.route == self.page.views[-1].route:
                 return
-        route = self.page.route
+        route = r.route
         if route.startswith("/"):
             route = route[1:]
         parts = route.split('/')
@@ -32,4 +32,3 @@ class LeftRouter:
     def on_route_change(self, parts: List[str]):
         """Use this to call the required controller method as the route changes"""
         raise NotImplementedError()
-
