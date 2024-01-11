@@ -38,20 +38,20 @@ class LeftModel:
         return self
 
     @classmethod
-    def get(cls, key: str) -> Model:
+    def get(cls, key: str) -> LeftModel:
         """Return the first object with the matching key"""
         query = {cls.__pk__: key}
         record = cls._get_db_service().read(keyname=cls.__pk__, **query)[0]
         return cls.from_dict(record)
 
     @classmethod
-    def all(cls) -> List[Model]:
+    def all(cls) -> List[LeftModel]:
         """Return all records of this type"""
         records = cls._get_db_service().read(keyname=cls.__pk__)
         return [cls.from_dict(record) for record in records]
 
     @classmethod
-    def get_where(cls, **kwargs) -> List[Model]:
+    def get_where(cls, **kwargs) -> List[LeftModel]:
         """Return a list of all records of this type with matching attributes as specified"""
         records = cls._get_db_service().read(keyname=cls.__pk__, **kwargs)
         return [cls.from_dict(record) for record in records]
