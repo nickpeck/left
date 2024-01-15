@@ -36,3 +36,7 @@ class TinyDBService(DocumentRecordService):
     def destroy(self, uid, keyname="uid"):
         with transaction(self.db):
             self.db.remove(where(keyname) == uid)
+
+    def bulk_insert(self, docs_to_insert):
+        with transaction(self.db) as _tr:
+            self.db.insert_multiple(docs_to_insert)

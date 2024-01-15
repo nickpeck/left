@@ -9,3 +9,6 @@ def make_props(*functions):
 
 def redirect(route: str):
     LeftApp.get_app().page.go(route)
+
+def get_page():
+    return LeftApp.get_app().page

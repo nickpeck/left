@@ -29,3 +29,22 @@ class LeftView:
     def update_state(self, **new_state):
         """make changes you need to your components whenever the mutable data updates."""
         pass
+
+
+class LeftDialog:
+    @property
+    def title(self) -> ft.Text:
+        return ft.Text()
+
+    @property
+    def content(self) -> List[ft.Container]:
+        return []
+
+    @property
+    def actions(self) -> List[ft.Container]:
+        return []
+
+    def update_state(self, **new_state):
+        """make changes you need to your components whenever the mutable data updates."""
+        pass
+

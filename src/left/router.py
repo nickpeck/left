@@ -12,6 +12,7 @@ class LeftRouter:
         self.page.on_view_pop = self._handle_view_pop
         self.page.go(self.page.route)
 
+
     def _handle_route_change(self, r: ft.RouteChangeEvent):
         logging.getLogger().info(f"handle_route_change: {r.route}")
         if len(self.page.views) > 0:

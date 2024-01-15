@@ -13,7 +13,10 @@ class LeftApp:
     def get_app():
         return LeftApp.__instance__
 
-    def __init__(self, router_cls: LeftRouter = LeftRouter, services: Optional[dict] = None, **kwargs):
+    def __init__(self, router_cls: LeftRouter = LeftRouter,
+                 services: Optional[dict] = None,
+                 pre_startup_hook = lambda self: None,
+                 **kwargs):
         if LeftApp.__instance__ is not None:
             raise Exception("App already initialized!")
         LeftApp.__instance__ = self
@@ -23,6 +26,7 @@ class LeftApp:
         self.page = None
         self.router_cls = router_cls
         self.opts = kwargs
+        self.pre_startup_hook = pre_startup_hook
         self.ft_app = ft.app(target=self, view=self.opts.get("flet_mode", ft.AppView.FLET_APP))
 
     def __call__(self, page: ft.Page):
@@ -32,6 +36,7 @@ class LeftApp:
         self.page.padding = self.opts.get("default_page_padding", 50)
         self.page.update()
         logging.getLogger().info("App is initialized and ready to serve")
+        self.pre_startup_hook(self)
         self.start_routing()
 
     def start_routing(self):
