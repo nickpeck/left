@@ -52,8 +52,14 @@ class LeftModel:
 
     @classmethod
     def get_where(cls, **kwargs) -> List[LeftModel]:
-        """Return a list of all records of this type with matching attributes as specified"""
+        """Return a list of all records of this type with matching attributes as specified, chained in AND syntax"""
         records = cls._get_db_service().read(keyname=cls.__pk__, **kwargs)
+        return [cls.from_dict(record) for record in records]
+
+    @classmethod
+    def search(cls, **kwargs) -> List[LeftModel]:
+        """Return a list of all records of this type with matching attributes as specified, chained in OR syntax"""
+        records = cls._get_db_service().read(keyname=cls.__pk__, operator="or", **kwargs)
         return [cls.from_dict(record) for record in records]
 
     def delete(self):

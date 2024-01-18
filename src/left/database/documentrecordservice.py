@@ -14,3 +14,6 @@ class DocumentRecordService:
 
     def destroy(self, uid):
         raise NotImplementedError()
+
+    def bulk_insert(self, docs_to_insert: List[Dict]):
+        raise NotImplementedError()

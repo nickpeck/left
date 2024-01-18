@@ -14,10 +14,25 @@ class TinyDBService(DocumentRecordService):
         with transaction(self.db):
             self.db.insert(kwargs)
 
-    def read(self, keyname: str, offset: Optional[int] = None, limit: Optional[int] = None, **kwargs) -> List[Dict]:
+    def read(self, keyname: str,
+             offset: Optional[int] = None,
+             limit: Optional[int] = None,
+             operator="and", **kwargs) -> List[Dict]:
         condition = where(keyname).exists()
+        i = 0
         for k, v in kwargs.items():
-            condition = condition & (where(k) == v)
+            if callable(v):
+                if operator == "or" and i > 0:
+                    condition = condition | (where(k).test(v))
+                else:
+                    condition = condition & (where(k).test(v))
+                i = i + 1
+                continue
+            if operator == "or" and i > 0:
+                condition = condition | (where(k) == v)
+            else:
+                condition = condition & (where(k) == v)
+            i = i + 1
         items = self.db.search(condition)
         if offset is not None:
             if limit is not None:
