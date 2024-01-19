@@ -1,5 +1,5 @@
 import logging
-from typing import Optional
+from typing import Optional, Callable, List
 
 import flet as ft
 
@@ -13,7 +13,7 @@ class LeftApp:
     def get_app():
         return LeftApp.__instance__
 
-    def __init__(self, router_cls: LeftRouter = LeftRouter,
+    def __init__(self, router_func: Callable[[List[str]], ...],
                  services: Optional[dict] = None,
                  pre_startup_hook = lambda self: None,
                  **kwargs):
@@ -24,7 +24,7 @@ class LeftApp:
         if services is not None:
             self.services.update(services)
         self.page = None
-        self.router_cls = router_cls
+        self.router_func = router_func
         self.opts = kwargs
         self.pre_startup_hook = pre_startup_hook
         self.ft_app = ft.app(target=self, view=self.opts.get("flet_mode", ft.AppView.FLET_APP))
@@ -40,4 +40,4 @@ class LeftApp:
         self.start_routing()
 
     def start_routing(self):
-        self.router_cls(self.page)
+        LeftRouter(self.page, self.router_func)

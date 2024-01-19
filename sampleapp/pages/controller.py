@@ -31,7 +31,7 @@ class PageController(LeftController):
     def view(self, uid):
         page = Page.get(uid)
         view = ReadPageView()
-        self._mount_view(view)
+        self._mount_view(view, layered=True)
         view.update_state(**page.to_dict())
 
     def create(self):
@@ -41,7 +41,7 @@ class PageController(LeftController):
 
         props = make_props(do_validate, do_submit)
         view = CreatePageView(**props)
-        self._mount_view(view)
+        self._mount_view(view, layered=True)
 
     def update(self, uid):
         page = Page.get(uid)
@@ -53,5 +53,5 @@ class PageController(LeftController):
 
         props = make_props(do_validate, do_submit)
         view = UpdatePageView(**props)
-        self._mount_view(view)
+        self._mount_view(view, layered=True)
         view.update_state(**page.to_dict())

@@ -15,7 +15,7 @@ class LeftController:
     def __init__(self, page: ft.Page):
         self.page = page
 
-    def _mount_view(self, view: LeftView, **flet_opts):
+    def _mount_view(self, view: LeftView, layered=False, **flet_opts):
         """Mount the view as a new on top of to the current page.
         The view will automatically re-render update whenever view.update_state() is invoked"""
         logging.getLogger().debug(f"mounting view {view} to route {self.page.route}")
@@ -25,7 +25,8 @@ class LeftController:
             "controls": view.controls,
             "drawer": view.drawer,
             "end_drawer": view.end_drawer,
-            "floating_action_button": view.floating_action_button
+            "floating_action_button": view.floating_action_button,
+            "route": self.page.route
         }
         flet_opts.update(default_opts)
         ft_view = ft.View(**flet_opts)
@@ -43,6 +44,8 @@ class LeftController:
             return method_wrap
 
         self._wrap(method_wrapper, view, view.update_state.__name__)
+        if not layered:
+            self.page.views.clear()
         self.page.views.append(ft_view)
         self.page.update()
         logging.getLogger().debug(f"Done mounting view")

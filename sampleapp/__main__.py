@@ -3,7 +3,7 @@ import sys
 
 from left import LeftApp
 from left.database.tinydbservice import TinyDBService
-from .router import MyRouter
+from .router import on_route_change
 
 logger = logging.getLogger()
 logger.setLevel(logging.INFO)
@@ -18,4 +18,4 @@ services = {
      "database": TinyDBService("db.json")
 }
 
-LeftApp(router_cls=MyRouter, default_title="Welcome to my app!", services=services)
+LeftApp(router_func=on_route_change, default_title="Welcome to my app!", services=services)
