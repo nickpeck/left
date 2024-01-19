@@ -8,8 +8,8 @@ def make_props(*functions):
 
 
 def redirect(route: str):
-    print(f"i want to go to  {route} anf the page route is currently {get_page().route}")
     LeftApp.get_app().page.go(route)
+
 
 def get_page():
     return LeftApp.get_app().page
