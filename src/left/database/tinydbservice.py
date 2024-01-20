@@ -43,15 +43,15 @@ class TinyDBService(DocumentRecordService):
         return items
 
     def update(self, uid, keyname="uid", **kwargs):
-        with transaction(self.db):
-            self.db.update(
+        with transaction(self.db) as tr:
+            tr.update(
                 kwargs,
                 where(keyname) == uid)
 
     def destroy(self, uid, keyname="uid"):
-        with transaction(self.db):
-            self.db.remove(where(keyname) == uid)
+        with transaction(self.db) as tr:
+            tr.remove(where(keyname) == uid)
 
     def bulk_insert(self, docs_to_insert):
-        with transaction(self.db) as _tr:
-            self.db.insert_multiple(docs_to_insert)
+        with transaction(self.db) as tr:
+            tr.insert_multiple(docs_to_insert)
