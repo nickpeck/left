@@ -41,7 +41,7 @@ class LeftApp:
         self.start_routing()
 
     def start_routing(self):
-        LeftRouter(self.page, self.view_was_popped, self.router_func)
+        LeftRouter(self.page, on_view_popped_cb=self.view_was_popped, on_route_change=self.router_func)
 
     def view_was_popped(self, view: ft.View):
         for observer in self.view_pop_observers:
