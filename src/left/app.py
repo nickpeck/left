@@ -26,6 +26,7 @@ class LeftApp:
         self.page = None
         self.router_func = router_func
         self.opts = kwargs
+        self.view_pop_observers = []
         self.pre_startup_hook = pre_startup_hook
         self.ft_app = ft.app(target=self, view=self.opts.get("flet_mode", ft.AppView.FLET_APP))
 
@@ -40,4 +41,8 @@ class LeftApp:
         self.start_routing()
 
     def start_routing(self):
-        LeftRouter(self.page, self.router_func)
+        LeftRouter(self.page, self.view_was_popped, self.router_func)
+
+    def view_was_popped(self, view: ft.View):
+        for observer in self.view_pop_observers:
+            observer(view)

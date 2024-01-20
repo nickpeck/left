@@ -30,6 +30,10 @@ class LeftView:
         """make changes you need to your components whenever the mutable data updates."""
         pass
 
+    def on_view_removed(self):
+        """Called when the view is popped from the stack of page.views"""
+        pass
+
 
 class LeftDialog:
     @property

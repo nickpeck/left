@@ -2,6 +2,7 @@ import logging
 
 import flet as ft
 
+from .app import LeftApp
 from .view import LeftView, LeftDialog
 
 
@@ -31,6 +32,10 @@ class LeftController:
         flet_opts.update(default_opts)
         ft_view = ft.View(**flet_opts)
 
+        def view_was_popped(popped_view: ft.View):
+            if popped_view == ft_view:
+                view.on_view_removed()
+
         def method_wrapper(func_update_state):
             def method_wrap(*args, **kwargs):
                 logging.getLogger().debug(f"update_state called on {view}")
@@ -48,6 +53,7 @@ class LeftController:
             self.page.views.clear()
         self.page.views.append(ft_view)
         self.page.update()
+        LeftApp.get_app().view_pop_observers.append(view_was_popped)
         logging.getLogger().debug(f"Done mounting view")
 
     def _mount_dialog(self, dialog: LeftDialog, **flet_opts):
