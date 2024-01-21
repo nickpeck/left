@@ -1,8 +1,9 @@
+from __future__ import annotations
 import logging
 from typing import Optional, List, Dict
 from threading import Lock, get_ident
 
-from tinydb import TinyDB, where
+from tinydb import TinyDB, where, Query
 from tinydb.storages import JSONStorage
 from tinydb.middlewares import CachingMiddleware
 from tinyrecord import transaction
@@ -10,7 +11,7 @@ from tinyrecord import transaction
 from .documentrecordservice import DocumentRecordService
 
 LOCK = Lock()
-LOCK_TIMEOUT = -1
+LOCK_TIMEOUT = 1
 
 
 def resource_lock(f):
@@ -19,29 +20,66 @@ def resource_lock(f):
             f"thread {get_ident()} waiting to acquire lock to run {f.__name__} with ({args} {kwargs})")
         LOCK.acquire(timeout=LOCK_TIMEOUT)
         logging.getLogger().debug(f"thread {get_ident()} has acquired lock")
-        result = f(*args, **kwargs)
-        LOCK.release()
-        logging.getLogger().debug(
-            f"thread {get_ident()} released lock")
+        result = None
+        ex = None
+        try:
+            result = f(*args, **kwargs)
+        except Exception as e:
+            ex = e
+            logging.getLogger().error(e)
+        finally:
+            LOCK.release()
+            logging.getLogger().debug(f"thread {get_ident()} released lock")
+        if ex:
+            raise ex
         return result
     return call
 
 
-class TinyDBService(DocumentRecordService):
+class TinyDBService:
     def __init__(self, db_file):
         self.db = TinyDB(db_file, storage=CachingMiddleware(JSONStorage))
 
-    @resource_lock
-    def create(self, **kwargs) -> str:
-        with transaction(self.db):
-            self.db.insert(kwargs)
+    def get_resource(self, table_name=None, key_name="uid") -> TinyDBResource:
+        resource = self.db
+        if table_name is not None:
+            resource = self.db.table(table_name)
+        return TinyDBResource(resource, key_name)
+
+    def __getattr__(self, item):
+        return getattr(self.get_resource(), item)
 
     @resource_lock
-    def read(self, keyname: str,
+    def flush(self):
+        self.db.storage.flush()
+
+    @resource_lock
+    def close(self):
+        self.db.close()
+
+
+class KeyNotExists(Exception): pass
+
+
+class TinyDBResource(DocumentRecordService):
+    def __init__(self, resource, key_name):
+        self.resource = resource
+        self.key_name = key_name
+
+    @resource_lock
+    def create(self, **kwargs) -> str:
+        print(self.key_name)
+        if self.key_name not in kwargs:
+            raise KeyNotExists(f"Missing key {self.key_name} in payload {kwargs}")
+        with transaction(self.resource):
+            self.resource.insert(kwargs)
+
+    @resource_lock
+    def read(self,
              offset: Optional[int] = None,
              limit: Optional[int] = None,
              operator="and", **kwargs) -> List[Dict]:
-        condition = where(keyname).exists()
+        condition = where(self.key_name).exists()
         i = 0
         for k, v in kwargs.items():
             if callable(v):
@@ -56,7 +94,7 @@ class TinyDBService(DocumentRecordService):
             else:
                 condition = condition & (where(k) == v)
             i = i + 1
-        items = self.db.search(condition)
+        items = self.resource.search(condition)
         if offset is not None:
             if limit is not None:
                 return items[offset: offset+limit]
@@ -66,26 +104,18 @@ class TinyDBService(DocumentRecordService):
         return items
 
     @resource_lock
-    def update(self, uid, keyname="uid", **kwargs):
-        with transaction(self.db) as tr:
+    def update(self, key_value, **kwargs):
+        with transaction(self.resource) as tr:
             tr.update(
                 kwargs,
-                where(keyname) == uid)
+                where(self.key_name) == key_value)
 
     @resource_lock
-    def destroy(self, uid, keyname="uid"):
-        with transaction(self.db) as tr:
-            tr.remove(where(keyname) == uid)
+    def destroy(self, key_value):
+        with transaction(self.resource) as tr:
+            tr.remove(where(self.key_name) == key_value)
 
     @resource_lock
     def bulk_insert(self, docs_to_insert):
-        with transaction(self.db):
-            self.db.insert_multiple(docs_to_insert)
-
-    @resource_lock
-    def flush(self):
-        self.db.storage.flush()
-
-    @resource_lock
-    def close(self):
-        self.db.close()
+        with transaction(self.resource):
+            self.resource.insert_multiple(docs_to_insert)
