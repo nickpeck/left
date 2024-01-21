@@ -68,7 +68,6 @@ class TinyDBResource(DocumentRecordService):
 
     @resource_lock
     def create(self, **kwargs) -> str:
-        print(self.key_name)
         if self.key_name not in kwargs:
             raise KeyNotExists(f"Missing key {self.key_name} in payload {kwargs}")
         with transaction(self.resource):
