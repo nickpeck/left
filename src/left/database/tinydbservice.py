@@ -1,5 +1,6 @@
+import logging
 from typing import Optional, List, Dict
-from threading import Lock
+from threading import Lock, get_ident
 
 from tinydb import TinyDB, where
 from tinyrecord import transaction
@@ -7,14 +8,19 @@ from tinyrecord import transaction
 from .documentrecordservice import DocumentRecordService
 
 LOCK = Lock()
-LOCK_TIMEOUT = 4
+LOCK_TIMEOUT = -1
 
 
 def resource_lock(f):
     def call(*args, **kwargs):
+        logging.getLogger().debug(
+            f"thread {get_ident()} waiting to acquire lock to run {f.__name__} with ({args} {kwargs})")
         LOCK.acquire(timeout=LOCK_TIMEOUT)
+        logging.getLogger().debug(f"thread {get_ident()} has acquired lock")
         result = f(*args, **kwargs)
         LOCK.release()
+        logging.getLogger().debug(
+            f"thread {get_ident()} released lock")
         return result
     return call
 
