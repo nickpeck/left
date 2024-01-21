@@ -3,6 +3,8 @@ from typing import Optional, List, Dict
 from threading import Lock, get_ident
 
 from tinydb import TinyDB, where
+from tinydb.storages import JSONStorage
+from tinydb.middlewares import CachingMiddleware
 from tinyrecord import transaction
 
 from .documentrecordservice import DocumentRecordService
@@ -27,7 +29,7 @@ def resource_lock(f):
 
 class TinyDBService(DocumentRecordService):
     def __init__(self, db_file):
-        self.db = TinyDB(db_file)
+        self.db = TinyDB(db_file, storage=CachingMiddleware(JSONStorage))
 
     @resource_lock
     def create(self, **kwargs) -> str:
@@ -77,5 +79,13 @@ class TinyDBService(DocumentRecordService):
 
     @resource_lock
     def bulk_insert(self, docs_to_insert):
-        with transaction(self.db) as tr:
-            tr.insert_multiple(docs_to_insert)
+        with transaction(self.db):
+            self.db.insert_multiple(docs_to_insert)
+
+    @resource_lock
+    def flush(self):
+        self.db.storage.flush()
+
+    @resource_lock
+    def close(self):
+        self.db.close()

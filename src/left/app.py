@@ -15,7 +15,7 @@ class LeftApp:
 
     def __init__(self, router_func: Callable[[List[str]], ...],
                  services: Optional[dict] = None,
-                 pre_startup_hook = lambda self: None,
+                 pre_startup_hook=lambda self: None,
                  **kwargs):
         if LeftApp.__instance__ is not None:
             raise Exception("App already initialized!")
@@ -32,6 +32,8 @@ class LeftApp:
 
     def __call__(self, page: ft.Page):
         self.page = page
+        self.page.window_prevent_close = True
+        self.page.on_window_event = self.on_window_event
         self.page.title = self.opts.get("default_title", "Title")
         self.page.theme_mode = self.opts.get("default_theme_mode", ft.ThemeMode.DARK)
         self.page.padding = self.opts.get("default_page_padding", 50)
@@ -46,3 +48,9 @@ class LeftApp:
     def view_was_popped(self, view: ft.View):
         for observer in self.view_pop_observers:
             observer(view)
+
+    def on_window_event(self, e):
+        if e.data == "close":
+            for _, service in self.services.items():
+                service.close()
+            self.page.window_destroy()
