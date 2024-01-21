@@ -1,19 +1,34 @@
 from typing import Optional, List, Dict
+from threading import Lock
 
 from tinydb import TinyDB, where
 from tinyrecord import transaction
 
 from .documentrecordservice import DocumentRecordService
 
+LOCK = Lock()
+LOCK_TIMEOUT = 4
+
+
+def resource_lock(f):
+    def call(*args, **kwargs):
+        LOCK.acquire(timeout=LOCK_TIMEOUT)
+        result = f(*args, **kwargs)
+        LOCK.release()
+        return result
+    return call
+
 
 class TinyDBService(DocumentRecordService):
     def __init__(self, db_file):
         self.db = TinyDB(db_file)
 
+    @resource_lock
     def create(self, **kwargs) -> str:
         with transaction(self.db):
             self.db.insert(kwargs)
 
+    @resource_lock
     def read(self, keyname: str,
              offset: Optional[int] = None,
              limit: Optional[int] = None,
@@ -42,16 +57,19 @@ class TinyDBService(DocumentRecordService):
             return items[:limit]
         return items
 
+    @resource_lock
     def update(self, uid, keyname="uid", **kwargs):
         with transaction(self.db) as tr:
             tr.update(
                 kwargs,
                 where(keyname) == uid)
 
+    @resource_lock
     def destroy(self, uid, keyname="uid"):
         with transaction(self.db) as tr:
             tr.remove(where(keyname) == uid)
 
+    @resource_lock
     def bulk_insert(self, docs_to_insert):
         with transaction(self.db) as tr:
             tr.insert_multiple(docs_to_insert)
