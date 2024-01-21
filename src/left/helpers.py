@@ -14,6 +14,5 @@ def redirect(route: str):
     page.go(route)
 
 
-
 def get_page():
     return LeftApp.get_app().page
