@@ -1,5 +1,8 @@
 import logging
+import os
+import sys
 from typing import Optional, Callable, List
+import importlib
 
 import flet as ft
 
@@ -27,6 +30,8 @@ class LeftApp:
         self.router_func = router_func
         self.opts = kwargs
         self.view_pop_observers = []
+        self.addons = self.load_addons()
+        self.call_addon_hook("on_load", self)
         self.pre_startup_hook = pre_startup_hook
         self.ft_app = ft.app(target=self, view=self.opts.get("flet_mode", ft.AppView.FLET_APP))
 
@@ -43,14 +48,56 @@ class LeftApp:
         self.start_routing()
 
     def start_routing(self):
-        LeftRouter(self.page, on_view_popped_cb=self.view_was_popped, on_route_change=self.router_func)
+        addon_routers = []
+        for addon in self.addons:
+            if "on_route_changed" in dir(addon):
+                addon_routers.append(addon.on_route_changed)
+
+        def on_route_changed(*args, **kwargs):
+            self.router_func(*args, **kwargs)
+            for router in addon_routers:
+                router(*args, **kwargs)
+        LeftRouter(self.page, on_view_popped_cb=self.view_was_popped, on_route_change=on_route_changed)
 
     def view_was_popped(self, view: ft.View):
         for observer in self.view_pop_observers:
             observer(view)
 
+    @staticmethod
+    def load_addons():
+        addons = []
+        addon_path = os.environ.get("MZ_ADDON_PATH", "addons")
+        if not os.path.exists(addon_path):
+            return addons
+        sys.path.append(addon_path)
+        for _, folder, _ in os.walk(addon_path):
+            if len(folder) == 0:
+                continue
+            if folder[0].startswith("_"):
+                continue
+            try:
+                addon = importlib.import_module(folder[0])
+            except ImportError as ie:
+                logging.getLogger().error(ie)
+                continue
+            addons.append(addon)
+        return addons
+
+    def call_addon_hook(self, name: str, *args, **kwargs):
+        for addon in self.addons:
+            if name in dir(addon):
+                getattr(addon, name)(*args, **kwargs)
+
+    def get_addon_buttons(self):
+        buttons = []
+        for addon in self.addons:
+            if "main_menu_icon" in dir(addon):
+                buttons.append(addon.main_menu_icon())
+        return buttons
+
     def on_window_event(self, e):
         if e.data == "close":
+            self.call_addon_hook("on_close", self)
             for _, service in self.services.items():
                 service.close()
             self.page.window_destroy()
