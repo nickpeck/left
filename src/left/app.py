@@ -66,7 +66,7 @@ class LeftApp:
     @staticmethod
     def load_addons():
         addons = []
-        addon_path = os.environ.get("MZ_ADDON_PATH", "addons")
+        addon_path = os.environ.get("LEFT_ADDON_PATH", "addons")
         if not os.path.exists(addon_path):
             return addons
         sys.path.append(addon_path)
