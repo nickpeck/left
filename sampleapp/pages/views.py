@@ -79,20 +79,20 @@ class CreatePageView(PageBaseView):
     def __init__(self, do_validate, do_submit):
         self.state = {"title": "", "text": "", "validates": False, "feedback": None}
         self.feedback = ft.Text("", color=ft.colors.RED)
-        self.title_input = ft.TextField(label="The title",
-                                        on_blur=lambda e: do_validate(
-                                            self,
-                                            title=self.title_input.value, text=self.text_input.value))
+        self.title_input = ft.TextField(label="The title")
         self.text_input = ft.TextField(label="The title",
                                        multiline=True,
                                        height=200,
-                                       min_lines=10,
-                                       on_blur=lambda e: do_validate(
+                                       min_lines=10)
+        self.text_input.on_blur = do_validate(
                                             self,
-                                            title=self.title_input.value, text=self.text_input.value))
-        self.submit = ft.ElevatedButton("Submit", disabled=True,
-                                        on_click=lambda e: do_submit(
-                                            title=self.title_input.value, text=self.text_input.value))
+                                            title_input=self.title_input, text_input=self.text_input)
+
+        self.title_input.on_blur = do_validate(
+                                            self,
+                                            title_input=self.title_input, text_input=self.text_input)
+        self.submit = ft.ElevatedButton("Submit", disabled=True)
+        self.submit.on_click = do_submit(title_input=self.title_input, text_input=self.text_input)
         self.update_state()
 
     @property

@@ -15,11 +15,11 @@ class PageController(LeftController):
             self.page.session.set("has_visited", True)
         pages = Page.all()
 
-        def delete_page(uid):
+        async def delete_page(uid):
             page = Page.get(uid)
             page.delete()
             pages.remove(page)
-            view.update_state(pages=pages)
+            await view.update_state(pages=pages)
 
         props = make_props(go_view_page, go_edit_page, go_create_page, delete_page)
         view = ListPagesView(**props)
@@ -35,9 +35,11 @@ class PageController(LeftController):
         await view.update_state(**page.to_dict())
 
     async def create(self):
-        def do_submit(**payload):
-            Page(**payload).upsert()
-            redirect("/")
+        def do_submit(title_input, text_input):
+            async def f(_):
+                Page(title=title_input.value, text=text_input.value).upsert()
+                await redirect("/")
+            return f
 
         props = make_props(do_validate, do_submit)
         view = CreatePageView(**props)

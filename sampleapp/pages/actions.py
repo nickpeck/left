@@ -2,6 +2,8 @@
 from left.view import LeftView
 from left.helpers import redirect
 
+import flet as ft
+
 
 def validate_page(title, text):
     """Basic validator, but could use schema-based validation, or pydantic..."""
@@ -13,16 +15,20 @@ def validate_page(title, text):
         return True, ""
 
 
-async def do_validate(view: LeftView, **kwargs):
+def do_validate(view: LeftView, title_input: ft.TextField, text_input: ft.TextField):
     """Validate, and update the view with the result"""
-    validates, msg = validate_page(
-        title=kwargs.get("title", ""),
-        text=kwargs.get("text", ""))
-    kwargs.update({
-        "validates": validates,
-        "feedback": msg
-    })
-    await view.update_state(**kwargs)
+    async def f(_):
+        validates, msg = validate_page(
+            title=title_input.value,
+            text=text_input.value)
+        response = {
+            "validates": validates,
+            "feedback": msg,
+            "title": title_input.value,
+            "text": title_input.value
+        }
+        await view.update_state(**response)
+    return f
 
 
 async def go_edit_page(uid: str):
