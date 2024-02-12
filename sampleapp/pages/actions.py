@@ -13,7 +13,7 @@ def validate_page(title, text):
         return True, ""
 
 
-def do_validate(view: LeftView, **kwargs):
+async def do_validate(view: LeftView, **kwargs):
     """Validate, and update the view with the result"""
     validates, msg = validate_page(
         title=kwargs.get("title", ""),
@@ -22,16 +22,16 @@ def do_validate(view: LeftView, **kwargs):
         "validates": validates,
         "feedback": msg
     })
-    view.update_state(**kwargs)
+    await view.update_state(**kwargs)
 
 
-def go_edit_page(uid: str):
-    redirect(f"/page/update/{uid}")
+async def go_edit_page(uid: str):
+    await redirect(f"/page/update/{uid}")
 
 
-def go_view_page(uid: str):
-    redirect(f"/page/view/{uid}")
+async def go_view_page(uid: str):
+    await redirect(f"/page/view/{uid}")
 
 
-def go_create_page():
-    redirect("/page/create")
+async def go_create_page(_):
+    await redirect("/page/create")

@@ -8,11 +8,11 @@ def make_props(*functions):
     return {f.__name__: f for f in functions}
 
 
-def redirect(route: str):
+async def redirect(route: str):
     page = LeftApp.get_app().page
     if page.route == route:
         return
-    page.go(route)
+    await page.go_async(route)
 
 
 def go_back(e):

@@ -1,3 +1,4 @@
+import asyncio
 import logging
 import os
 import sys
@@ -33,31 +34,34 @@ class LeftApp:
         self.addons = self.load_addons()
         self.call_addon_hook("on_load", self)
         self.pre_startup_hook = pre_startup_hook
-        self.ft_app = ft.app(target=self, view=self.opts.get("flet_mode", ft.AppView.FLET_APP))
+        async def f():
+            await ft.app_async(target=self, view=self.opts.get("flet_mode", ft.AppView.FLET_APP))
 
-    def __call__(self, page: ft.Page):
+        asyncio.run(f())
+
+    async def __call__(self, page: ft.Page):
         self.page = page
         self.page.window_prevent_close = True
         self.page.on_window_event = self.on_window_event
         self.page.title = self.opts.get("default_title", "Title")
         self.page.theme_mode = self.opts.get("default_theme_mode", ft.ThemeMode.DARK)
         self.page.padding = self.opts.get("default_page_padding", 50)
-        self.page.update()
+        await self.page.update_async()
         logging.getLogger().info("App is initialized and ready to serve")
         self.pre_startup_hook(self)
-        self.start_routing()
+        await self.start_routing()
 
-    def start_routing(self):
+    async def start_routing(self):
         addon_routers = []
         for addon in self.addons:
             if "on_route_changed" in dir(addon):
                 addon_routers.append(addon.on_route_changed)
 
-        def on_route_changed(*args, **kwargs):
-            self.router_func(*args, **kwargs)
+        async def on_route_changed(*args, **kwargs):
+            await self.router_func(*args, **kwargs)
             for router in addon_routers:
                 router(*args, **kwargs)
-        LeftRouter(self.page, on_view_popped_cb=self.view_was_popped, on_route_change=on_route_changed)
+        await LeftRouter(self.page, on_view_popped_cb=self.view_was_popped, on_route_change=on_route_changed)
 
     def view_was_popped(self, view: ft.View):
         for observer in self.view_pop_observers:
@@ -95,9 +99,9 @@ class LeftApp:
                 buttons.append(addon.main_menu_icon())
         return buttons
 
-    def on_window_event(self, e):
+    async def on_window_event(self, e):
         if e.data == "close":
             self.call_addon_hook("on_close", self)
             for _, service in self.services.items():
                 service.close()
-            self.page.window_destroy()
+            await self.page.window_destroy_async()

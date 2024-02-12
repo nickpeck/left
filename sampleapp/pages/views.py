@@ -69,7 +69,7 @@ class ListPagesView(PageBaseView):
     def controls(self):
         if self.state.get("is_loading", False):
             return [loading_spinner(size=50)]
-        controls = [ft.ElevatedButton("Create a page", on_click=lambda e: self.go_create_page())]
+        controls = [ft.ElevatedButton("Create a page", on_click=self.go_create_page)]
         for page in self.state.get("pages", []):
             controls.append(self.make_page_card(page))
         return controls

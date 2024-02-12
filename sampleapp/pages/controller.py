@@ -9,7 +9,7 @@ from .actions import go_create_page, go_view_page, go_edit_page, do_validate
 
 
 class PageController(LeftController):
-    def index(self):
+    async def index(self):
         has_visited = self.page.session.get("has_visited")
         if not has_visited:
             self.page.session.set("has_visited", True)
@@ -23,35 +23,37 @@ class PageController(LeftController):
 
         props = make_props(go_view_page, go_edit_page, go_create_page, delete_page)
         view = ListPagesView(**props)
-        self._mount_view(view)
+        await self._mount_view(view)
         if not has_visited:
             sleep(2)  # just putting this here to simulate a little loading wait - user should see the spinner!
-        view.update_state(pages=pages, is_loading=False)
+        await view.update_state(pages=pages, is_loading=False)
 
-    def view(self, uid):
+    async def view(self, uid):
         page = Page.get(uid)
         view = ReadPageView()
-        self._mount_view(view, layered=True)
-        view.update_state(**page.to_dict())
+        await self._mount_view(view, layered=True)
+        await view.update_state(**page.to_dict())
 
-    def create(self):
+    async def create(self):
         def do_submit(**payload):
             Page(**payload).upsert()
             redirect("/")
 
         props = make_props(do_validate, do_submit)
         view = CreatePageView(**props)
-        self._mount_view(view, layered=True)
+        await self._mount_view(view, layered=True)
 
-    def update(self, uid):
+    async def update(self, uid):
         page = Page.get(uid)
 
-        def do_submit(**payload):
-            payload["page_id"] = uid
-            Page(**payload).upsert()
-            redirect("/")
+        async def do_submit():
+            async def f(**payload):
+                payload["page_id"] = uid
+                Page(**payload).upsert()
+                redirect("/")
+            return f
 
         props = make_props(do_validate, do_submit)
         view = UpdatePageView(**props)
-        self._mount_view(view, layered=True)
-        view.update_state(**page.to_dict())
+        await self._mount_view(view, layered=True)
+        await view.update_state(**page.to_dict())

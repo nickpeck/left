@@ -1,3 +1,4 @@
+import asyncio
 import logging
 from typing import List, Callable, Optional
 
@@ -12,10 +13,15 @@ class LeftRouter:
         self.on_route_change = on_route_change
         self.page.on_route_change = self._handle_route_change
         self.page.on_view_pop = self._handle_view_pop
-        self.page.go(self.page.route)
         self.on_view_popped_cb = on_view_popped_cb
 
-    def _handle_route_change(self, r: ft.RouteChangeEvent):
+    async def async_init(self):
+        await self.page.go_async(self.page.route)
+
+    def __await__(self):
+        return self.async_init().__await__()
+
+    async def _handle_route_change(self, r: ft.RouteChangeEvent):
         logging.getLogger().info(f"handle_route_change: {r.route}")
 
         if len(self.page.views) and self.page.route == self.page.views[-1].route:
@@ -26,7 +32,7 @@ class LeftRouter:
         if route.startswith("/"):
             route = route[1:]
         parts = route.split('/')
-        self.on_route_change(self.page, parts)
+        await self.on_route_change(self.page, parts)
 
     def _handle_view_pop(self, _view: ft.ViewPopEvent):
         logging.getLogger().info(f"_handle_view_pop view, current list of views is {self.page.views}")
