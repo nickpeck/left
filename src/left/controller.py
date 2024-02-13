@@ -16,7 +16,7 @@ class LeftController:
     def __init__(self, page: ft.Page):
         self.page = page
 
-    def _mount_view(self, view: LeftView, layered=False, **flet_opts):
+    async def _mount_view(self, view: LeftView, layered=False, **flet_opts):
         """Mount the view as a new on top of to the current page.
         The view will automatically re-render update whenever view.update_state() is invoked"""
         logging.getLogger().debug(f"mounting view {view} to route {self.page.route}")
@@ -37,7 +37,7 @@ class LeftController:
                 view.on_view_removed()
 
         def method_wrapper(func_update_state):
-            def method_wrap(*args, **kwargs):
+            async def method_wrap(*args, **kwargs):
                 logging.getLogger().debug(f"update_state called on {view}")
                 func_update_state(*args, **kwargs)
                 ft_view.appbar = view.appbar
@@ -45,14 +45,14 @@ class LeftController:
                 ft_view.drawer = view.drawer
                 ft_view.end_drawer = view.end_drawer
                 logging.getLogger().debug(f"updating view {view}")
-                ft_view.update()
+                await ft_view.update_async()
             return method_wrap
 
         self._wrap(method_wrapper, view, view.update_state.__name__)
         if not layered:
             self.page.views.clear()
         self.page.views.append(ft_view)
-        self.page.update()
+        await self.page.update_async()
         LeftApp.get_app().view_pop_observers.append(view_was_popped)
         logging.getLogger().debug(f"Done mounting view")
 
