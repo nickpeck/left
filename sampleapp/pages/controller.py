@@ -48,11 +48,10 @@ class PageController(LeftController):
     async def update(self, uid):
         page = Page.get(uid)
 
-        async def do_submit():
-            async def f(**payload):
-                payload["page_id"] = uid
-                Page(**payload).upsert()
-                redirect("/")
+        def do_submit(title_input, text_input):
+            async def f(_):
+                Page(page_id=uid, title=title_input.value, text=text_input.value).upsert()
+                await redirect("/")
             return f
 
         props = make_props(do_validate, do_submit)

@@ -33,10 +33,10 @@ class ListPagesView(PageBaseView):
         self.state.update(new_state)
 
     def make_page_card(self, page):
-        def prompt_and_delete(e):
-            def delete_and_close(x):
-                self.delete_page(page.key)
-                x.page.close_dialog()
+        async def prompt_and_delete(e):
+            async def delete_and_close(x):
+                await self.delete_page(page.key)
+                await x.page.close_dialog_async()
 
             dlg_modal = ft.AlertDialog(
                 modal=True,
@@ -48,7 +48,7 @@ class ListPagesView(PageBaseView):
                 ],
                 actions_alignment=ft.MainAxisAlignment.END
             )
-            e.page.show_dialog(dlg_modal)
+            await e.page.show_dialog_async(dlg_modal)
 
         return ft.Card(
             content=ft.Column([
@@ -58,9 +58,9 @@ class ListPagesView(PageBaseView):
                     ft.IconButton(ft.icons.DELETE,
                                   on_click=prompt_and_delete),
                     ft.IconButton(ft.icons.EDIT,
-                                  on_click=lambda e: self.go_edit_page(page.key)),
+                                  on_click=self.go_edit_page(page.key)),
                     ft.IconButton(ft.icons.PLAY_ARROW,
-                                  on_click=lambda e: self.go_view_page(page.key))
+                                  on_click=self.go_view_page(page.key))
                 ])
             ])
         )

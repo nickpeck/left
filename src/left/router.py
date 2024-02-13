@@ -34,10 +34,10 @@ class LeftRouter:
         parts = route.split('/')
         await self.on_route_change(self.page, parts)
 
-    def _handle_view_pop(self, _view: ft.ViewPopEvent):
+    async def _handle_view_pop(self, _view: ft.ViewPopEvent):
         logging.getLogger().info(f"_handle_view_pop view, current list of views is {self.page.views}")
         popped = self.page.views.pop()
         if self.on_view_popped_cb is not None:
             self.on_view_popped_cb(popped)
         self.page.route = self.page.views[-1].route
-        self.page.update()
+        await self.page.update_async()

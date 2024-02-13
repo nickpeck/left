@@ -25,18 +25,22 @@ def do_validate(view: LeftView, title_input: ft.TextField, text_input: ft.TextFi
             "validates": validates,
             "feedback": msg,
             "title": title_input.value,
-            "text": title_input.value
+            "text": text_input.value
         }
         await view.update_state(**response)
     return f
 
 
-async def go_edit_page(uid: str):
-    await redirect(f"/page/update/{uid}")
+def go_edit_page(uid: str):
+    async def f(_):
+        await redirect(f"/page/update/{uid}")
+    return f
 
 
-async def go_view_page(uid: str):
-    await redirect(f"/page/view/{uid}")
+def go_view_page(uid: str):
+    async def f(_):
+        await redirect(f"/page/view/{uid}")
+    return f
 
 
 async def go_create_page(_):
