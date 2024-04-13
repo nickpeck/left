@@ -20,6 +20,7 @@ class LeftApp:
     def __init__(self, router_func: Callable[[List[str]], ...],
                  services: Optional[dict] = None,
                  pre_startup_hook=lambda self: None,
+                 is_async=False,
                  **kwargs):
         if LeftApp.__instance__ is not None:
             raise Exception("App already initialized!")
@@ -36,8 +37,11 @@ class LeftApp:
         self.pre_startup_hook = pre_startup_hook
         async def f():
             await ft.app_async(target=self, view=self.opts.get("flet_mode", ft.AppView.FLET_APP))
+        if is_async:
+            asyncio.run(f())
+            return
+        ft.app(target=self, view=self.opts.get("flet_mode", ft.AppView.FLET_APP))
 
-        asyncio.run(f())
 
     async def __call__(self, page: ft.Page):
         self.page = page
@@ -49,9 +53,9 @@ class LeftApp:
         await self.page.update_async()
         logging.getLogger().info("App is initialized and ready to serve")
         self.pre_startup_hook(self)
-        await self.start_routing()
+        await self.start_routing_async()
 
-    async def start_routing(self):
+    async def start_routing_async(self):
         addon_routers = []
         for addon in self.addons:
             if "on_route_changed" in dir(addon):
