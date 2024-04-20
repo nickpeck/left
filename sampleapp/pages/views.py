@@ -33,10 +33,10 @@ class ListPagesView(PageBaseView):
         self.state.update(new_state)
 
     def make_page_card(self, page):
-        def prompt_and_delete(e):
-            def delete_and_close(x):
-                self.delete_page(page.key)
-                x.page.close_dialog()
+        async def prompt_and_delete(e):
+            async def delete_and_close(x):
+                await self.delete_page(page.key)
+                await x.page.close_dialog_async()
 
             dlg_modal = ft.AlertDialog(
                 modal=True,
@@ -48,7 +48,7 @@ class ListPagesView(PageBaseView):
                 ],
                 actions_alignment=ft.MainAxisAlignment.END
             )
-            e.page.show_dialog(dlg_modal)
+            await e.page.show_dialog_async(dlg_modal)
 
         return ft.Card(
             content=ft.Column([
@@ -58,9 +58,9 @@ class ListPagesView(PageBaseView):
                     ft.IconButton(ft.icons.DELETE,
                                   on_click=prompt_and_delete),
                     ft.IconButton(ft.icons.EDIT,
-                                  on_click=lambda e: self.go_edit_page(page.key)),
+                                  on_click=self.go_edit_page(page.key)),
                     ft.IconButton(ft.icons.PLAY_ARROW,
-                                  on_click=lambda e: self.go_view_page(page.key))
+                                  on_click=self.go_view_page(page.key))
                 ])
             ])
         )
@@ -69,7 +69,7 @@ class ListPagesView(PageBaseView):
     def controls(self):
         if self.state.get("is_loading", False):
             return [loading_spinner(size=50)]
-        controls = [ft.ElevatedButton("Create a page", on_click=lambda e: self.go_create_page())]
+        controls = [ft.ElevatedButton("Create a page", on_click=self.go_create_page)]
         for page in self.state.get("pages", []):
             controls.append(self.make_page_card(page))
         return controls
@@ -79,20 +79,20 @@ class CreatePageView(PageBaseView):
     def __init__(self, do_validate, do_submit):
         self.state = {"title": "", "text": "", "validates": False, "feedback": None}
         self.feedback = ft.Text("", color=ft.colors.RED)
-        self.title_input = ft.TextField(label="The title",
-                                        on_blur=lambda e: do_validate(
-                                            self,
-                                            title=self.title_input.value, text=self.text_input.value))
+        self.title_input = ft.TextField(label="The title")
         self.text_input = ft.TextField(label="The title",
                                        multiline=True,
                                        height=200,
-                                       min_lines=10,
-                                       on_blur=lambda e: do_validate(
+                                       min_lines=10)
+        self.text_input.on_blur = do_validate(
                                             self,
-                                            title=self.title_input.value, text=self.text_input.value))
-        self.submit = ft.ElevatedButton("Submit", disabled=True,
-                                        on_click=lambda e: do_submit(
-                                            title=self.title_input.value, text=self.text_input.value))
+                                            title_input=self.title_input, text_input=self.text_input)
+
+        self.title_input.on_blur = do_validate(
+                                            self,
+                                            title_input=self.title_input, text_input=self.text_input)
+        self.submit = ft.ElevatedButton("Submit", disabled=True)
+        self.submit.on_click = do_submit(title_input=self.title_input, text_input=self.text_input)
         self.update_state()
 
     @property
