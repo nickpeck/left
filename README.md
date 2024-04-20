@@ -1,5 +1,7 @@
 # LEFT, a Minimalist Flet Framework
 
+*Note to self; this is an async branch - with the intention of enabling the building apps as a front-end/Pyodide web distribution. See build-web.bat*
+
 A very simple framework using the flet library - the bare boilerplate code I use to get some apps up and running.
 
 I have deliberately kept things extremely simple - it doesn't attempt to hide the flet internals,

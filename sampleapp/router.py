@@ -1,8 +1,6 @@
 from typing import List
 
-from left import LeftRouter
-
-from .pages.controller import PageController
+from pages.controller import PageController
 
 
 async def on_route_change(page, parts: List[str]):

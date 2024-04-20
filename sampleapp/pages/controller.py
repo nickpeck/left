@@ -13,7 +13,7 @@ class PageController(LeftController):
         has_visited = self.page.session.get("has_visited")
         if not has_visited:
             self.page.session.set("has_visited", True)
-        pages = Page.all()
+        pages = await Page.all()
 
         async def delete_page(uid):
             page = Page.get(uid)
@@ -29,7 +29,7 @@ class PageController(LeftController):
         await view.update_state(pages=pages, is_loading=False)
 
     async def view(self, uid):
-        page = Page.get(uid)
+        page = await Page.get(uid)
         view = ReadPageView()
         await self._mount_view(view, layered=True)
         await view.update_state(**page.to_dict())
@@ -37,7 +37,7 @@ class PageController(LeftController):
     async def create(self):
         def do_submit(title_input, text_input):
             async def f(_):
-                Page(title=title_input.value, text=text_input.value).upsert()
+                await Page(title=title_input.value, text=text_input.value).upsert()
                 await redirect("/")
             return f
 
@@ -46,11 +46,11 @@ class PageController(LeftController):
         await self._mount_view(view, layered=True)
 
     async def update(self, uid):
-        page = Page.get(uid)
+        page = await Page.get(uid)
 
         def do_submit(title_input, text_input):
             async def f(_):
-                Page(page_id=uid, title=title_input.value, text=text_input.value).upsert()
+                await Page(page_id=uid, title=title_input.value, text=text_input.value).upsert()
                 await redirect("/")
             return f
 
