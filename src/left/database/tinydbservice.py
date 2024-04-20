@@ -8,7 +8,7 @@ from tinydb.storages import JSONStorage
 from tinydb.middlewares import CachingMiddleware
 from tinyrecord import transaction
 
-from .documentrecordservice import DocumentRecordService
+from .documentrecordservice import DocumentRecordService, KeyNotExists
 
 LOCK = Lock()
 LOCK_TIMEOUT = 1
@@ -56,9 +56,6 @@ class TinyDBService:
     @resource_lock
     def close(self):
         self.db.close()
-
-
-class KeyNotExists(Exception): pass
 
 
 class TinyDBResource(DocumentRecordService):
