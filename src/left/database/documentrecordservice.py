@@ -1,6 +1,10 @@
 from typing import Optional, List, Dict
 
 
+class KeyNotExists(Exception):
+    pass
+
+
 class DocumentRecordService:
 
     def create(self, **kwargs) -> str:
