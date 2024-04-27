@@ -36,6 +36,15 @@ class LeftApp:
         self.ft_app = ft.app(target=self, view=self.opts.get("flet_mode", ft.AppView.FLET_APP))
 
     def __call__(self, page: ft.Page):
+        # workaround for window failing to restore from background https://github.com/flet-dev/flet/issues/2951
+        # https://flet.dev/docs/controls/page/#on_window_event
+        async def on_window_event(_):
+            page.window_height = page.window_max_height
+            page.window_width = page.window_max_width
+            page.window_top = 10
+            page.window_left = 10
+            await page.update_async()
+
         self.page = page
         self.page.window_prevent_close = True
         self.page.on_window_event = self.on_window_event
