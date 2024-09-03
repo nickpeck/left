@@ -1,5 +1,6 @@
 import logging
 import sys
+import os
 
 from left import LeftApp
 from left.database.tinydbservice import TinyDBService
@@ -18,4 +19,9 @@ services = {
      "database": TinyDBService("db.json")
 }
 
-LeftApp(router_func=on_route_change, default_title="Welcome to my app!", services=services)
+LeftApp(
+    router_func=on_route_change,
+    default_title="Welcome to my app!",
+    services=services,
+    splash_image=os.path.join(os.getcwd(), r"sampleapp\splash_screen.png"))
+

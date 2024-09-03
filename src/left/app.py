@@ -7,6 +7,7 @@ import importlib
 import flet as ft
 
 from .router import LeftRouter
+from .splashscreen import SplashScreen
 
 
 class LeftApp:
@@ -33,6 +34,12 @@ class LeftApp:
         self.addons = self.load_addons()
         self.call_addon_hook("on_load", self)
         self.pre_startup_hook = pre_startup_hook
+        self.splash_screen = None
+        if self.opts.get("splash_image"):
+            self.splash_screen = SplashScreen(
+                title=self.opts.get("default_title", "Title"),
+                img_path=self.opts.get("splash_image"),
+                duration=self.opts.get("splash_duration", 3000))
         self.ft_app = ft.app(target=self, view=self.opts.get("flet_mode", ft.AppView.FLET_APP))
 
     def __call__(self, page: ft.Page):
@@ -54,6 +61,8 @@ class LeftApp:
         self.page.update()
         logging.getLogger().info("App is initialized and ready to serve")
         self.pre_startup_hook(self)
+        if self.splash_screen is not None:
+            self.splash_screen.close_splash()
         self.start_routing()
 
     def start_routing(self):
