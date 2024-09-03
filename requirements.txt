@@ -4,3 +4,5 @@ slugify==0.0.1
 tinydb
 tinyrecord
 setuptools
+pillow==10.4.0
+mtTkinter==0.6.1
