@@ -54,7 +54,7 @@ class LeftApp:
 
         self.page = page
         self.page.window_prevent_close = True
-        self.page.on_window_event = self.on_window_event
+        self.page.window.on_event = self.on_window_event
         self.page.title = self.opts.get("default_title", "Title")
         self.page.theme_mode = self.opts.get("default_theme_mode", ft.ThemeMode.DARK)
         self.page.padding = self.opts.get("default_page_padding", 50)
