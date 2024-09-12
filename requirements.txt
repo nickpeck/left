@@ -6,3 +6,4 @@ tinyrecord
 setuptools
 pillow==10.4.0
 mtTkinter==0.6.1
+screeninfo==0.8.1

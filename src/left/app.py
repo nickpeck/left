@@ -7,7 +7,6 @@ import importlib
 import flet as ft
 
 from .router import LeftRouter
-from .splashscreen import SplashScreen
 
 
 class LeftApp:
@@ -36,6 +35,8 @@ class LeftApp:
         self.pre_startup_hook = pre_startup_hook
         self.splash_screen = None
         if self.opts.get("splash_image"):
+            from .splashscreen import SplashScreen # optional import, Windows only
+            # nb, uses TK, so you will need to package with pyinstaller: 'flet package myapp.py'
             self.splash_screen = SplashScreen(
                 title=self.opts.get("default_title", "Title"),
                 img_path=self.opts.get("splash_image"),
