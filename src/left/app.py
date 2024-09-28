@@ -119,4 +119,4 @@ class LeftApp:
             self.call_addon_hook("on_close", self)
             for _, service in self.services.items():
                 service.close()
-            self.page.window_destroy()
+            self.page.window.destroy()
