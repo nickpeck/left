@@ -1,5 +1,5 @@
 [project]
-name = "left"
+name = "python-left"
 version = "0.0.1"
 requires-python = ">= 3.10"
 dependencies = [
