@@ -1,3 +1,6 @@
+__version__ = '0.0.1'
+__author__ = 'Nick Peck'
+
 from .app import LeftApp
 from .router import LeftRouter
 from .model import LeftModel
