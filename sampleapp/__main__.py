@@ -22,6 +22,5 @@ services = {
 LeftApp(
     router_func=on_route_change,
     default_title="Welcome to my app!",
-    services=services,
-    splash_image=os.path.join(os.getcwd(), r"sampleapp\splash_screen.png"))
+    services=services)
 
