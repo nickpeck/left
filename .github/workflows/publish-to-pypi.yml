@@ -37,7 +37,7 @@ jobs:
 
     environment:
       name: pypi
-      url: https://pypi.org/p/left
+      url: https://pypi.org/p/python-left
 
     permissions:
       id-token: write  # IMPORTANT: mandatory for trusted publishing
