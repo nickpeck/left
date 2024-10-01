@@ -21,6 +21,6 @@ setuptools.setup(
     ],
     python_requires='>=3.10',
     install_requires=["flet>=0.24.1", "dataclasses_json==0.6.3",
-                      "tinydb==4.8.0", "tinyrecord==0.2.0", "setuptools==69.0.3"],
+                      "tinydb==4.8.0", "tinyrecord==0.2.0"],
     include_package_data=True,
 )
