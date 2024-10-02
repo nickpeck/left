@@ -5,6 +5,8 @@ on:
   workflow_dispatch:
 
 jobs:
+  tests:
+    uses: ./.github/workflows/run-tests.yml
   build:
     name: Build distribution 📦
     runs-on: ubuntu-latest
