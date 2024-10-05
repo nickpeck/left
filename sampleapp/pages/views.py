@@ -9,6 +9,14 @@ class PageBaseView(LeftView):
     def appbar(self):
         return ft.AppBar(title=ft.Text(self.title), actions=[])
 
+    @property
+    def bottom_appbar(self):
+        return ft.BottomAppBar(
+            content=ft.Row([
+                ft.Text("Site Footer/Copyright etc (See PageBaseView.bottom_appbar)")
+            ], alignment=ft.MainAxisAlignment.CENTER)
+        )
+
 
 class ListPagesView(PageBaseView):
     def __init__(self, delete_page, go_edit_page, go_create_page, go_view_page):

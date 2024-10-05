@@ -44,6 +44,7 @@ class LeftController:
                 ft_view.controls = view.controls
                 ft_view.drawer = view.drawer
                 ft_view.end_drawer = view.end_drawer
+                ft_view.bottom_appbar = view.bottom_appbar
                 logging.getLogger().debug(f"updating view {view}")
                 ft_view.update()
             return method_wrap

@@ -26,6 +26,10 @@ class LeftView:
     def floating_action_button(self) -> Optional[ft.FloatingActionButton]:
         return None
 
+    @property
+    def bottom_appbar(self) -> Optional[ft.BottomAppBar]:
+        return None
+
     def update_state(self, **new_state):
         """make changes you need to your components whenever the mutable data updates."""
         pass
