@@ -14,7 +14,7 @@ class ReadOnlyJSONDBService:
     def __init__(self, db_file):
         try:
             self._data = load(db_file)
-        except TypeError:
+        except (TypeError, AttributeError):
             self._data = load(open(db_file))
 
     def get_resource(self, table_name=None, key_name="uid") -> ReadOnlyJSONDBResource:
