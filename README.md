@@ -14,7 +14,9 @@ dev usage (requires python >= 3.10)
 pip install python-left
 ~~~
 
-Simplest possible app usage. See sampleapp/ for a more fully-fledged CRUD-app example.
+See [Developer Guide](dev-guide.md) and sampleapp/ for a more fully-fledged CRUD-app example.
+
+Here is the simplest possible app usage:
 
 ```python
 import flet as ft
