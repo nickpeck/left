@@ -1,5 +1,4 @@
-flet==0.26.0
-flet-desktop==0.26.0
+flet[all]==0.26.0
 dataclasses_json==0.6.3
 # slugify==0.0.1
 tinydb==4.8.0
