@@ -1,5 +1,6 @@
 from __future__ import annotations
 import logging
+from contextlib import contextmanager
 from typing import Optional, List, Dict
 from threading import Lock, get_ident
 
@@ -37,8 +38,16 @@ def resource_lock(f):
 
 
 class TinyDBService:
-    def __init__(self, db_file):
-        self.db = TinyDB(db_file, storage=CachingMiddleware(JSONStorage))
+    def __init__(self, db_file, write_through=True):
+        """
+        :param db_file: name of the file where the JSON data will be stored
+        :param write_through: if True (default) each write is written to the cache and saved straight away.
+        Reads are always from the cache.
+        """
+        middleware = CachingMiddleware(JSONStorage)
+        if write_through:
+            middleware.WRITE_CACHE_SIZE = 1
+        self.db = TinyDB(db_file, storage=middleware)
 
     def get_resource(self, table_name=None, key_name="uid") -> TinyDBResource:
         resource = self.db
