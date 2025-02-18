@@ -1,6 +1,6 @@
 [project]
 name = "python-left"
-version = "0.0.4"
+version = "0.0.5"
 requires-python = ">= 3.10"
 dependencies = [
     "flet==0.24.1",
