@@ -38,7 +38,7 @@ def resource_lock(f):
 
 
 class TinyDBService:
-    def __init__(self, db_file, write_through=True):
+    def __init__(self, db_file, write_through=True, read_query_cache_size=30):
         """
         :param db_file: name of the file where the JSON data will be stored
         :param write_through: if True (default) each write is written to the cache and saved straight away.
@@ -48,11 +48,12 @@ class TinyDBService:
         if write_through:
             middleware.WRITE_CACHE_SIZE = 1
         self.db = TinyDB(db_file, storage=middleware)
+        self.read_query_cache_size = read_query_cache_size
 
     def get_resource(self, table_name=None, key_name="uid") -> TinyDBResource:
         resource = self.db
         if table_name is not None:
-            resource = self.db.table(table_name)
+            resource = self.db.table(table_name, cache_size=self.read_query_cache_size)
         return TinyDBResource(resource, key_name)
 
     def __getattr__(self, item):
