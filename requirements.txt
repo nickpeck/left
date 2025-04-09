@@ -1,9 +1,5 @@
 flet[all]==0.27.6
 dataclasses_json==0.6.3
-# slugify==0.0.1
 tinydb==4.8.2
 tinyrecord==0.2.0
 setuptools==69.0.3
-# pillow==10.4.0
-# mtTkinter==0.6.1
-# screeninfo==0.8.1

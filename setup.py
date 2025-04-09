@@ -20,7 +20,7 @@ setuptools.setup(
         'License :: OSI Approved :: MIT License',
     ],
     python_requires='>=3.10',
-    install_requires=["flet>=0.24.1", "dataclasses_json==0.6.3",
-                      "tinydb==4.8.0", "tinyrecord==0.2.0"],
-    include_package_data=True,
+    install_requires=["flet[all]==0.27.6", "dataclasses_json==0.6.3",
+                      "tinydb==4.8.2", "tinyrecord==0.2.0"],
+    include_package_data=True
 )

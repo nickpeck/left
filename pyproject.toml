@@ -19,5 +19,5 @@ license = {file = "LICENSE"}
 Repository = "https://github.com/nickpeck/left.git"
 
 [build-system]
-requires = ["setuptools==69.0.3"]
+requires = ["setuptools==78.1.0"]
 build-backend = "setuptools.build_meta"
