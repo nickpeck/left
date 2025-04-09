@@ -28,7 +28,7 @@ def yes_no_prompt(message: str, title="Please confirm", on_yes: Callable = lambd
 
     def on_yes_clicked(e):
         on_yes(e)
-        page.close()
+        page.close(dlg_modal)
 
     dlg_modal = ft.AlertDialog(
         modal=True,
