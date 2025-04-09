@@ -28,7 +28,7 @@ def yes_no_prompt(message: str, title="Please confirm", on_yes: Callable = lambd
 
     def on_yes_clicked(e):
         on_yes(e)
-        page.close_dialog()
+        page.close()
 
     dlg_modal = ft.AlertDialog(
         modal=True,
@@ -36,8 +36,8 @@ def yes_no_prompt(message: str, title="Please confirm", on_yes: Callable = lambd
         content=ft.Text(message),
         actions=[
             ft.ElevatedButton("Yes", on_click=on_yes_clicked),
-            ft.ElevatedButton("No", on_click=lambda _: page.close_dialog()),
+            ft.ElevatedButton("No", on_click=lambda _: page.close(dlg_modal)),
         ],
         actions_alignment=ft.MainAxisAlignment.END
     )
-    page.show_dialog(dlg_modal)
+    page.open(dlg_modal)
