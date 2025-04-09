@@ -41,7 +41,7 @@ class LeftApp:
                 title=self.opts.get("default_title", "Title"),
                 img_path=self.opts.get("splash_image"),
                 duration=self.opts.get("splash_duration", 3000))
-        self.ft_app = ft.app(target=self, view=self.opts.get("flet_mode", ft.AppView.FLET_APP))
+        ft.app(target=self, view=self.opts.get("flet_mode", ft.AppView.FLET_APP))
 
     def __call__(self, page: ft.Page):
         # workaround for window failing to restore from background https://github.com/flet-dev/flet/issues/2951
@@ -54,7 +54,7 @@ class LeftApp:
             await page.update_async()
 
         self.page = page
-        self.page.window_prevent_close = True
+        self.page.window.prevent_close = True
         self.page.window.on_event = self.on_window_event
         self.page.title = self.opts.get("default_title", "Title")
         self.page.theme_mode = self.opts.get("default_theme_mode", ft.ThemeMode.DARK)
