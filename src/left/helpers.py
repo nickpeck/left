@@ -18,7 +18,7 @@ def redirect(route: str):
 def go_back(e):
     """e is an event originating from a control on the active view"""
     page = LeftApp.get_app().page
-    page.on_view_pop.get_handler()(e)
+    page.on_view_pop(e)
 
 
 def get_page():
