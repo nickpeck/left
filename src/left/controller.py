@@ -80,8 +80,7 @@ class LeftController:
             return method_wrap
 
         self._wrap(method_wrapper, dialog, dialog.update_state.__name__)
-        self.page.dialog = ft_dialog
-        self.page.dialog.open = True
+        self.page.open(ft_dialog)
         self.page.update()
         logging.getLogger().debug(f"Done mounting dialog")
 
