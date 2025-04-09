@@ -46,7 +46,7 @@ class LeftController:
                 ft_view.end_drawer = view.end_drawer
                 ft_view.bottom_appbar = view.bottom_appbar
                 logging.getLogger().debug(f"updating view {view}")
-                ft_view.update()
+                self.page.update()
             return method_wrap
 
         self._wrap(method_wrapper, view, view.update_state.__name__)
@@ -80,8 +80,7 @@ class LeftController:
             return method_wrap
 
         self._wrap(method_wrapper, dialog, dialog.update_state.__name__)
-        self.page.dialog = ft_dialog
-        self.page.dialog.open = True
+        self.page.open(ft_dialog)
         self.page.update()
         logging.getLogger().debug(f"Done mounting dialog")
 
