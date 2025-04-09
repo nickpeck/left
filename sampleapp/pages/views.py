@@ -44,7 +44,7 @@ class ListPagesView(PageBaseView):
         def prompt_and_delete(e):
             def delete_and_close(x):
                 self.delete_page(page.key)
-                x.page.close_dialog()
+                x.page.close(dlg_modal)
 
             dlg_modal = ft.AlertDialog(
                 modal=True,
@@ -52,11 +52,11 @@ class ListPagesView(PageBaseView):
                 content=ft.Text("Do you really want to delete this page?"),
                 actions=[
                     ft.ElevatedButton("Yes", on_click=delete_and_close),
-                    ft.ElevatedButton("No", on_click=lambda x: x.page.close_dialog()),
+                    ft.ElevatedButton("No", on_click=lambda x: x.page.close(dlg_modal)),
                 ],
                 actions_alignment=ft.MainAxisAlignment.END
             )
-            e.page.show_dialog(dlg_modal)
+            e.page.open(dlg_modal)
 
         return ft.Card(
             content=ft.Column([

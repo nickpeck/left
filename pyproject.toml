@@ -3,9 +3,9 @@ name = "python-left"
 version = "0.0.5"
 requires-python = ">= 3.10"
 dependencies = [
-    "flet==0.24.1",
+    "flet==0.27.6",
     "dataclasses_json==0.6.3",
-    "tinydb==4.8.0",
+    "tinydb==4.8.2",
     "tinyrecord==0.2.0"
 ]
 authors = [
