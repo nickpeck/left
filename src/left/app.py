@@ -1,8 +1,6 @@
+from __future__ import annotations
 import logging
-import os
-import sys
 from typing import Optional, Callable, List
-import importlib
 
 import flet as ft
 
@@ -11,7 +9,8 @@ from .addons import Addons
 
 
 class LeftApp:
-    __instance__ = None
+    __instance__: Optional[LeftApp] = None
+    page: Optional[ft.Page] = None
 
     @staticmethod
     def get_app():
@@ -24,12 +23,9 @@ class LeftApp:
         if LeftApp.__instance__ is not None:
             raise Exception("App already initialized!")
         LeftApp.__instance__ = self
-        self.services = {}
-        if services is not None:
-            self.services.update(services)
-        self.page = None
-        self.router_func = router_func
         self.opts = kwargs
+        self.services = services if services else {}
+        self.router_func = router_func
         self.view_pop_observers = []
         self.addons = Addons()
         self.pre_startup_hook = pre_startup_hook
@@ -46,6 +42,14 @@ class LeftApp:
             page.window_left = 10
             await page.update_async()
 
+        self._init_page(page)
+        logging.getLogger().info("App is initialized and ready to serve")
+        self.pre_startup_hook(self)
+        if self.splash_screen is not None:
+            self.splash_screen.close_splash()
+        self.start_routing()
+
+    def _init_page(self, page):
         self.page = page
         self.page.window.prevent_close = True
         self.page.window.on_event = self.on_window_event
@@ -53,11 +57,6 @@ class LeftApp:
         self.page.theme_mode = self.opts.get("default_theme_mode", ft.ThemeMode.DARK)
         self.page.padding = self.opts.get("default_page_padding", 50)
         self.page.update()
-        logging.getLogger().info("App is initialized and ready to serve")
-        self.pre_startup_hook(self)
-        if self.splash_screen is not None:
-            self.splash_screen.close_splash()
-        self.start_routing()
 
     def start_routing(self):
         addon_routers = []
