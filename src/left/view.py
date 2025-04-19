@@ -1,9 +1,18 @@
+from abc import ABC, abstractmethod
 from typing import Optional, List
 
 import flet as ft
 
 
-class LeftView:
+class LeftViewBase(ABC):
+
+    @abstractmethod
+    def update_state(self, **new_state):
+        """make changes you need to your components whenever the mutable data updates."""
+        raise NotImplementedError("update_state")
+
+
+class LeftView(LeftViewBase, ABC):
     @property
     def appbar(self) -> Optional[ft.AppBar]:
         """return how you want the app bar to appear, or None. Called each time the state is updated"""
@@ -30,16 +39,12 @@ class LeftView:
     def bottom_appbar(self) -> Optional[ft.BottomAppBar]:
         return None
 
-    def update_state(self, **new_state):
-        """make changes you need to your components whenever the mutable data updates."""
-        pass
-
     def on_view_removed(self):
         """Called when the view is popped from the stack of page.views"""
         pass
 
 
-class LeftDialog:
+class LeftDialog(LeftViewBase, ABC):
     @property
     def title(self) -> ft.Text:
         return ft.Text()
@@ -51,8 +56,3 @@ class LeftDialog:
     @property
     def actions(self) -> List[ft.Container]:
         return []
-
-    def update_state(self, **new_state):
-        """make changes you need to your components whenever the mutable data updates."""
-        pass
-
