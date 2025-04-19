@@ -42,3 +42,6 @@ class Addons:
             if "main_menu_icon" in dir(addon):
                 buttons.append(addon.main_menu_icon())
         return buttons
+
+    def __iter__(self):
+        return iter(self.addons)

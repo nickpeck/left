@@ -76,7 +76,7 @@ class LeftApp:
 
     def on_window_event(self, e):
         if e.data == "close":
-            self.call_addon_hook("on_close", self)
+            self.addons.call_addon_hook("on_close", self)
             for _, service in self.services.items():
                 service.close()
             self.page.window.destroy()
