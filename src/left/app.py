@@ -7,6 +7,7 @@ import importlib
 import flet as ft
 
 from .router import LeftRouter
+from .addons import Addons
 
 
 class LeftApp:
@@ -30,17 +31,9 @@ class LeftApp:
         self.router_func = router_func
         self.opts = kwargs
         self.view_pop_observers = []
-        self.addons = self.load_addons()
-        self.call_addon_hook("on_load", self)
+        self.addons = Addons()
         self.pre_startup_hook = pre_startup_hook
-        self.splash_screen = None
-        if self.opts.get("splash_image"):
-            from .splashscreen import SplashScreen # optional import, Windows only
-            # nb, uses TK, so you will need to package with pyinstaller: 'flet package myapp.py'
-            self.splash_screen = SplashScreen(
-                title=self.opts.get("default_title", "Title"),
-                img_path=self.opts.get("splash_image"),
-                duration=self.opts.get("splash_duration", 3000))
+        self.splash_screen = self._load_splashscreen() if self.opts.get("splash_image") else None
         ft.app(target=self, view=self.opts.get("flet_mode", ft.AppView.FLET_APP))
 
     def __call__(self, page: ft.Page):
@@ -82,41 +75,17 @@ class LeftApp:
         for observer in self.view_pop_observers:
             observer(view)
 
-    @staticmethod
-    def load_addons():
-        addons = []
-        addon_path = os.environ.get("LEFT_ADDON_PATH", "addons")
-        if not os.path.exists(addon_path):
-            return addons
-        sys.path.append(addon_path)
-        for _, folder, _ in os.walk(addon_path):
-            if len(folder) == 0:
-                continue
-            if folder[0].startswith("_"):
-                continue
-            try:
-                addon = importlib.import_module(folder[0])
-            except ImportError as ie:
-                logging.getLogger().error(ie)
-                continue
-            addons.append(addon)
-        return addons
-
-    def call_addon_hook(self, name: str, *args, **kwargs):
-        for addon in self.addons:
-            if name in dir(addon):
-                getattr(addon, name)(*args, **kwargs)
-
-    def get_addon_buttons(self):
-        buttons = []
-        for addon in self.addons:
-            if "main_menu_icon" in dir(addon):
-                buttons.append(addon.main_menu_icon())
-        return buttons
-
     def on_window_event(self, e):
         if e.data == "close":
             self.call_addon_hook("on_close", self)
             for _, service in self.services.items():
                 service.close()
             self.page.window.destroy()
+
+    def _load_splashscreen(self):
+        from .splashscreen import SplashScreen  # optional import, Windows only
+        # nb, uses TK, so you will need to package with pyinstaller: 'flet package myapp.py'
+        return SplashScreen(
+            title=self.opts.get("default_title", "Title"),
+            img_path=self.opts.get("splash_image"),
+            duration=self.opts.get("splash_duration", 3000))
