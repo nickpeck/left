@@ -4,6 +4,14 @@ from left import LeftView
 import flet as ft
 from typing import Optional
 
+from left.view import LeftDialog
+
+
+def _wrap(wrapper, instance, method_name):
+    class_method = getattr(instance, method_name)
+    wrapped_method = wrapper(class_method)
+    setattr(instance, method_name, wrapped_method)
+
 
 class MountedView:
     ft_view: Optional[ft.View] = None
@@ -15,17 +23,11 @@ class MountedView:
         self.view = view
         flet_opts = self._init_view_options(flet_opts, view)
         self.ft_view = ft.View(**flet_opts)
-        self._wrap(self.method_wrapper, view, view.update_state.__name__)
+        _wrap(self._method_wrapper, view, view.update_state.__name__)
         if not layered:
             self.page.views.clear()
         self.page.views.append(self.ft_view)
         self.page.update()
-
-    @staticmethod
-    def _wrap(wrapper, instance, method_name):
-        class_method = getattr(instance, method_name)
-        wrapped_method = wrapper(class_method)
-        setattr(instance, method_name, wrapped_method)
 
     def _init_view_options(self, flet_opts, view):
         default_opts = {
@@ -50,7 +52,7 @@ class MountedView:
         self.ft_view.end_drawer = self.view.end_drawer
         self.ft_view.bottom_appbar = self.view.bottom_appbar
 
-    def method_wrapper(self, func_update_state):
+    def _method_wrapper(self, func_update_state):
         def method_wrap(*args, **kwargs):
             logging.getLogger().debug(f"update_state called on {self.view}")
             func_update_state(*args, **kwargs)
@@ -59,3 +61,35 @@ class MountedView:
             self.page.update()
         return method_wrap
 
+
+class MountedDialog:
+    def __init__(self, page: ft.Page, dialog: LeftDialog, **flet_opts):
+        self.dialog = dialog
+        flet_opts = self._init_view_options(flet_opts, dialog)
+        self.ft_dialog = ft.AlertDialog(**flet_opts)
+        _wrap(self._method_wrapper, dialog, dialog.update_state.__name__)
+        page.open(self.ft_dialog)
+        page.update()
+
+    @staticmethod
+    def _init_view_options(flet_opts, dialog):
+        default_opts = {
+            "title": dialog.title,
+            "content": dialog.content,
+            "actions": dialog.actions
+        }
+        flet_opts.update(default_opts)
+        return flet_opts
+
+    def _method_wrapper(self, func_update_state):
+        def method_wrap(*args, **kwargs):
+            logging.getLogger().debug(f"update_state called on {self.dialog}")
+            func_update_state(*args, **kwargs)
+            self._rebuild_dialog_controls()
+            logging.getLogger().debug(f"updating view {self.dialog}")
+            self.ft_dialog.update()
+        return method_wrap
+
+    def _rebuild_dialog_controls(self):
+        self.ft_dialog.content = self.dialog.content
+        self.ft_dialog.actions = self.dialog.actions
