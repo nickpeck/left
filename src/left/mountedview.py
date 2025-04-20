@@ -9,10 +9,15 @@ from left.view import LeftDialog, LeftViewBase
 
 
 class Mounted(ABC):
+    """
+    Connect a left view to a flet AdaptiveControl, such as that whenever
+    update_state() is called on the left view, the actual flet view is refreshed.
+    """
     page: ft.Page
     left_view: LeftViewBase
 
-    def _wrap(self, instance, method_name):
+    def _bind_update_state_to_page_update(self, instance):
+        method_name = LeftViewBase.update_state.__name__
         class_method = getattr(instance, method_name)
         wrapped_method = self._method_wrapper(class_method)
         setattr(instance, method_name, wrapped_method)
@@ -32,6 +37,9 @@ class Mounted(ABC):
 
 
 class MountedView(Mounted):
+    """
+    Mount a flet.View instance onto the page
+    """
     ft_view: Optional[ft.View] = None
     left_view: LeftView
 
@@ -40,7 +48,7 @@ class MountedView(Mounted):
         self.left_view = left_view
         flet_opts = self._init_view_options(flet_opts)
         self.ft_view = ft.View(**flet_opts)
-        self._wrap(self.left_view, self.left_view.update_state.__name__)
+        self._bind_update_state_to_page_update(self.left_view)
         if not layered:
             self.page.views.clear()
         self.page.views.append(self.ft_view)
@@ -71,13 +79,16 @@ class MountedView(Mounted):
 
 
 class MountedDialog(Mounted):
+    """
+    Mount a flet AlertDialog onto the active page
+    """
     left_view: LeftDialog
 
     def __init__(self, page: ft.Page, dialog: LeftDialog, **flet_opts):
         self.view = dialog
         flet_opts = self._init_view_options(flet_opts, dialog)
         self.ft_dialog = ft.AlertDialog(**flet_opts)
-        self._wrap(dialog, dialog.update_state.__name__)
+        self._bind_update_state_to_page_update(dialog)
         page.open(self.ft_dialog)
         page.update()
 
