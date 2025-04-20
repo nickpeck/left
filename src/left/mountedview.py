@@ -85,7 +85,8 @@ class MountedDialog(Mounted):
     left_view: LeftDialog
 
     def __init__(self, page: ft.Page, dialog: LeftDialog, **flet_opts):
-        self.view = dialog
+        self.page = page
+        self.left_view = dialog
         flet_opts = self._init_view_options(flet_opts, dialog)
         self.ft_dialog = ft.AlertDialog(**flet_opts)
         self._bind_update_state_to_page_update(dialog)
