@@ -35,7 +35,7 @@ class LeftModel:
     def upsert(self):
         """If the key field is None, create a key and insert, otherwise, update and return the updated object"""
         if self.key is None:
-            self.key = str(uuid4())
+            self.key = self.create_key()
             self.get_resource_for_cls().create(**self.to_dict())
             return self
         payload = self.to_dict()

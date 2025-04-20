@@ -6,6 +6,9 @@ import importlib
 
 
 class Addons:
+    """
+    used to manage the lifecycle of addon modules, which are defined at LEFT_ADDON_PATH (default addons)
+    """
 
     def __init__(self):
         self.addons = self.load_addons()

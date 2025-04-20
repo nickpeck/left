@@ -1,6 +1,4 @@
-from abc import ABC, abstractmethod
 from typing import Optional, List
-
 import flet as ft
 
 
@@ -44,7 +42,7 @@ class LeftView(LeftViewBase):
         pass
 
 
-class LeftDialog(LeftViewBase, ABC):
+class LeftDialog(LeftViewBase):
     @property
     def title(self) -> ft.Text:
         return ft.Text()
