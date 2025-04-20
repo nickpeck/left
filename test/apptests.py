@@ -1,8 +1,6 @@
 import unittest
 from unittest import mock
 
-import flet
-
 from left.app import LeftApp
 from left.router import LeftRouter
 
@@ -13,12 +11,12 @@ class TestRouter(unittest.TestCase):
         LeftApp.__instance__ = None
 
     @mock.patch("flet.app")
-    def test_app_initialize(self, app):
+    def test_app_initialize(self, _app):
         LeftRouter.on_route_change = mock.Mock()
         LeftApp(router=LeftRouter)
 
     @mock.patch("flet.app")
-    def test_app_should_be_callable(self, app):
+    def test_app_should_be_callable(self, _app):
         LeftRouter.on_route_change = mock.Mock()
         app = LeftApp(router=LeftRouter)
         page = mock.Mock()

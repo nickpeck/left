@@ -20,7 +20,7 @@ class TestRouter(unittest.TestCase):
         page.go = mock.Mock()
         page.views = []
         on_route_change = mock.Mock()
-        router = LeftRouter(page, on_route_change)
+        LeftRouter(page, on_route_change)
         page.on_route_change(ft.RouteChangeEvent(route="/new/route"))
         assert on_route_change.call_args == mock.call(page, ['new', 'route'])
 
