@@ -28,31 +28,31 @@ class Mounted(ABC):
 
     @abstractmethod
     def _rebuild_controls(self):
-        raise NotImplementedError("_rebuild_dialog_controls")
+        pass
 
 
 class MountedView(Mounted):
     ft_view: Optional[ft.View] = None
     left_view: LeftView
 
-    def __init__(self, page: ft.Page, view: LeftView, layered=False, **flet_opts):
+    def __init__(self, page: ft.Page, left_view: LeftView, layered=False, **flet_opts):
         self.page = page
-        self.view = view
-        flet_opts = self._init_view_options(flet_opts, view)
+        self.left_view = left_view
+        flet_opts = self._init_view_options(flet_opts)
         self.ft_view = ft.View(**flet_opts)
-        self._wrap(view, view.update_state.__name__)
+        self._wrap(self.left_view, self.left_view.update_state.__name__)
         if not layered:
             self.page.views.clear()
         self.page.views.append(self.ft_view)
         self.page.update()
 
-    def _init_view_options(self, flet_opts, view):
+    def _init_view_options(self, flet_opts):
         default_opts = {
-            "appbar": view.appbar,
-            "controls": view.controls,
-            "drawer": view.drawer,
-            "end_drawer": view.end_drawer,
-            "floating_action_button": view.floating_action_button,
+            "appbar": self.left_view.appbar,
+            "controls": self.left_view.controls,
+            "drawer": self.left_view.drawer,
+            "end_drawer": self.left_view.end_drawer,
+            "floating_action_button": self.left_view.floating_action_button,
             "route": self.page.route
         }
         flet_opts.update(default_opts)
@@ -60,14 +60,14 @@ class MountedView(Mounted):
 
     def view_was_popped(self, popped_view: ft.View):
         if popped_view == self.ft_view:
-            self.view.on_view_removed()
+            self.left_view.on_view_removed()
 
     def _rebuild_controls(self):
-        self.ft_view.appbar = self.view.appbar
-        self.ft_view.controls = self.view.controls
-        self.ft_view.drawer = self.view.drawer
-        self.ft_view.end_drawer = self.view.end_drawer
-        self.ft_view.bottom_appbar = self.view.bottom_appbar
+        self.ft_view.appbar = self.left_view.appbar
+        self.ft_view.controls = self.left_view.controls
+        self.ft_view.drawer = self.left_view.drawer
+        self.ft_view.end_drawer = self.left_view.end_drawer
+        self.ft_view.bottom_appbar = self.left_view.bottom_appbar
 
 
 class MountedDialog(Mounted):

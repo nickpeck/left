@@ -4,15 +4,15 @@ from typing import Optional, List
 import flet as ft
 
 
-class LeftViewBase(ABC):
+class LeftViewBase:
+    state: dict = {}
 
-    @abstractmethod
     def update_state(self, **new_state):
         """make changes you need to your components whenever the mutable data updates."""
-        raise NotImplementedError("update_state")
+        self.state.update(new_state)
 
 
-class LeftView(LeftViewBase, ABC):
+class LeftView(LeftViewBase):
     @property
     def appbar(self) -> Optional[ft.AppBar]:
         """return how you want the app bar to appear, or None. Called each time the state is updated"""
