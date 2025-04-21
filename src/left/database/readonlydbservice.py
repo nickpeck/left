@@ -4,10 +4,10 @@ Stand-in for TinyDb in situations where the app is to be deployed in read-only m
 """
 
 from __future__ import annotations
-from typing import Optional, List, Dict, Callable
+from typing import List, Dict, Callable
 from json import load
 
-from .documentrecordservice import DocumentRecordService
+from .tinydbservice import TinyDBResource
 
 
 class ReadOnlyJSONDBService:
@@ -77,42 +77,13 @@ class Where:
         return Condition(f)
 
 
-class ReadOnlyJSONDBResource(DocumentRecordService):
+class ReadOnlyJSONDBResource(TinyDBResource):
     def __init__(self, resource, key_name):
-        self.resource = Resource(resource)
-        self.key_name = key_name
+        super().__init__(Resource(resource), key_name)
+        self._where = Where
 
     def create(self, **kwargs) -> str:
         raise NotImplementedError("create() not available on a read only db")
-
-    def read(self,
-             offset: Optional[int] = None,
-             limit: Optional[int] = None,
-             operator="and", **kwargs) -> List[Dict]:
-
-        condition = Where(self.key_name).exists()
-        i = 0
-        for k, v in kwargs.items():
-            if callable(v):
-                if operator == "or" and i > 0:
-                    condition = condition | (Where(k).test(v))
-                else:
-                    condition = condition & (Where(k).test(v))
-                i = i + 1
-                continue
-            if operator == "or" and i > 0:
-                condition = condition | Where(k).test(v)
-            else:
-                condition = condition & Where(k).test(v)
-            i = i + 1
-        items = self.resource.search(condition)
-        if offset is not None:
-            if limit is not None:
-                return items[offset: offset+limit]
-            return items[offset:]
-        elif limit is not None:
-            return items[:limit]
-        return items
 
     def update(self, key_value, **kwargs):
         raise NotImplementedError("update() not available on a read only db")

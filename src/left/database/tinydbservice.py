@@ -71,6 +71,7 @@ class TinyDBResource(DocumentRecordService):
     def __init__(self, resource, key_name):
         self.resource = resource
         self.key_name = key_name
+        self._where = where
 
     @resource_lock
     def create(self, **kwargs) -> str:
@@ -84,18 +85,18 @@ class TinyDBResource(DocumentRecordService):
              offset: Optional[int] = None,
              limit: Optional[int] = None,
              operator="and", **kwargs) -> List[Dict]:
-        condition = where(self.key_name).exists()
+        condition = self._where(self.key_name).exists()
         i = 0
         for k, v in kwargs.items():
             if callable(v):
                 if operator == "or" and i > 0:
-                    condition = condition | (where(k).test(v))
+                    condition = condition | (self._where(k).test(v))
                 else:
-                    condition = condition & (where(k).test(v))
+                    condition = condition & (self._where(k).test(v))
                 i = i + 1
                 continue
             if operator == "or" and i > 0:
-                condition = condition | (where(k) == v)
+                condition = condition | (self._where(k) == v)
             else:
                 condition = condition & (where(k) == v)
             i = i + 1
@@ -113,12 +114,12 @@ class TinyDBResource(DocumentRecordService):
         with transaction(self.resource) as tr:
             tr.update(
                 kwargs,
-                where(self.key_name) == key_value)
+                self._where(self.key_name) == key_value)
 
     @resource_lock
     def destroy(self, key_value):
         with transaction(self.resource) as tr:
-            tr.remove(where(self.key_name) == key_value)
+            tr.remove(self._where(self.key_name) == key_value)
 
     @resource_lock
     def bulk_insert(self, docs_to_insert):
