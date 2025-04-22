@@ -6,7 +6,7 @@ class KeyNotExists(Exception):
     pass
 
 
-class DocumentRecordService(ABC):
+class DocumentDBResource(ABC):
 
     @abstractmethod
     def create(self, **kwargs) -> str:

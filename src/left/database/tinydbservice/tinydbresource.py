@@ -3,11 +3,11 @@ from typing import Optional, List, Dict
 from tinydb import where
 from tinyrecord import transaction
 
-from ..documentrecordservice import DocumentRecordService, KeyNotExists
+from ..documentdbresource import DocumentDBResource, KeyNotExists
 from ..resourcelock import resource_lock
 
 
-class TinyDBResource(DocumentRecordService):
+class TinyDBResource(DocumentDBResource):
     def __init__(self, resource, key_name):
         self.resource = resource
         self.key_name = key_name
