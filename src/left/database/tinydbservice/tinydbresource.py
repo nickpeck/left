@@ -1,70 +1,10 @@
-from __future__ import annotations
-import logging
 from typing import Optional, List, Dict
-from threading import Lock, get_ident
 
-from tinydb import TinyDB, where, Query
-from tinydb.storages import JSONStorage
-from tinydb.middlewares import CachingMiddleware
+from tinydb import where
 from tinyrecord import transaction
 
-from .documentrecordservice import DocumentRecordService, KeyNotExists
-
-LOCK = Lock()
-LOCK_TIMEOUT = 1
-
-
-def resource_lock(f):
-    def call(*args, **kwargs):
-        logging.getLogger().debug(
-            f"thread {get_ident()} waiting to acquire lock to run {f.__name__} with ({args} {kwargs})")
-        LOCK.acquire(timeout=LOCK_TIMEOUT)
-        logging.getLogger().debug(f"thread {get_ident()} has acquired lock")
-        result = None
-        ex = None
-        try:
-            result = f(*args, **kwargs)
-        except Exception as e:
-            ex = e
-            logging.getLogger().error(e)
-        finally:
-            LOCK.release()
-            logging.getLogger().debug(f"thread {get_ident()} released lock")
-        if ex:
-            raise ex
-        return result
-    return call
-
-
-class TinyDBService:
-    def __init__(self, db_file, write_through=True, read_query_cache_size=30):
-        """
-        :param db_file: name of the file where the JSON data will be stored
-        :param write_through: if True (default) each write is written to the cache and saved straight away.
-        Reads are always from the cache.
-        """
-        middleware = CachingMiddleware(JSONStorage)
-        if write_through:
-            middleware.WRITE_CACHE_SIZE = 1
-        self.db = TinyDB(db_file, storage=middleware)
-        self.read_query_cache_size = read_query_cache_size
-
-    def get_resource(self, table_name=None, key_name="uid") -> TinyDBResource:
-        resource = self.db
-        if table_name is not None:
-            resource = self.db.table(table_name, cache_size=self.read_query_cache_size)
-        return TinyDBResource(resource, key_name)
-
-    def __getattr__(self, item):
-        return getattr(self.get_resource(), item)
-
-    @resource_lock
-    def flush(self):
-        self.db.storage.flush()
-
-    @resource_lock
-    def close(self):
-        self.db.close()
+from ..documentrecordservice import DocumentRecordService, KeyNotExists
+from ..resourcelock import resource_lock
 
 
 class TinyDBResource(DocumentRecordService):

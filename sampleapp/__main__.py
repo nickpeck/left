@@ -1,9 +1,8 @@
 import logging
 import sys
-import os
 
 from left import LeftApp
-from left.database.tinydbservice import TinyDBService
+from left.database.tinydbservice.tinydbservice import TinyDBService
 from .router import on_route_change
 
 logger = logging.getLogger()
