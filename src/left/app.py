@@ -69,6 +69,7 @@ class LeftApp:
             for router in addon_routers:
                 router(*args, **kwargs)
         LeftRouter(self.page, on_view_popped_cb=self.view_was_popped, on_route_change=on_route_changed)
+        self.addons.call_addon_hook("on_app_ready", self)
 
     def view_was_popped(self, view: ft.View):
         for observer in self.view_pop_observers:
