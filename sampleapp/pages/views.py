@@ -91,7 +91,7 @@ class CreatePageView(PageBaseView):
                                         on_blur=lambda e: do_validate(
                                             self,
                                             title=self.title_input.value, text=self.text_input.value))
-        self.text_input = ft.TextField(label="The title",
+        self.text_input = ft.TextField(label="The text",
                                        multiline=True,
                                        height=200,
                                        min_lines=10,
