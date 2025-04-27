@@ -66,6 +66,10 @@ class TinyDBService:
     def close(self):
         self.db.close()
 
+    @resource_lock
+    def drop_tables(self):
+        self.db.drop_tables()
+
 
 class TinyDBResource(DocumentRecordService):
     def __init__(self, resource, key_name):
