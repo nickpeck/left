@@ -1,9 +1,8 @@
-# addons/myaddonmodule/__init__.py
 import inspect
 import time
 import traceback
 
-from left import LeftApp, LeftController, LeftView
+from left import LeftApp
 import flet as ft
 
 from left.database.tinydbservice import TinyDBService
@@ -11,11 +10,10 @@ from left.database.tinydbservice import TinyDBService
 
 class TestRunner:
     results = []
-    route = None
-    app: None
+    route: str = None
+    app: LeftApp
 
-
-    def __init__(self, app):
+    def __init__(self, app: LeftApp):
         self.app = app
         self.page = app.page
         self._bind_route_change_handler()
@@ -24,17 +22,19 @@ class TestRunner:
     def _bind_route_change_handler(self):
         existing_handler = self.page.on_route_change
         def new_handler(*args, **kwargs):
-            #print("&&&&&&&&&&&&&&&&&&&&&&&&&&&&&", args, kwargs)
             existing_handler(*args, **kwargs)
             self.route = args[0].route
         self.page.on_route_change = new_handler
+
 
     def setUp(self):
         self.app.services["database"].drop_tables()
         self.app.services["database"].flush()
 
+
     def tearDown(self):
         pass
+
 
     def run(self) -> None:
         from time import sleep
@@ -101,55 +101,3 @@ class TestRunner:
         button.event_handlers['click'](ft.ControlEvent('page', 'click', None, button, self.page))
         self._wait_for_app("/")
         assert self.page.views[-1].appbar.title.value == 'List Pages'
-
-
-runner = None
-
-
-
-class ResultsView(LeftView):
-
-    def __init__(self):
-        self.state = {'results': []}
-
-    @property
-    def controls(self):
-        return [
-            ft.Column(
-                controls=[ft.Row(
-                    controls=[
-                        ft.Text(result)
-                    ]
-                ) for result in self.state['results']]
-            )
-        ]
-
-
-
-
-class ResultsController(LeftController):
-
-    def results(self):
-        view = ResultsView()
-        self._mount_view(view)
-        view.update_state(results=runner.results)
-
-
-def on_load(_app: LeftApp):
-    # any actions to be taken on load, ie storing settings in the db
-    pass
-
-
-def on_app_ready(_app: LeftApp):
-    global runner
-    runner = TestRunner(_app)
-    runner.run()
-    pass
-
-
-def on_route_changed(page, parts):
-    match parts:
-        case ['tests', 'results']:
-            ResultsController(page).results()
-        case _:
-            return
