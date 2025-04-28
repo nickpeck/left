@@ -14,7 +14,6 @@ def on_app_ready(_app: LeftApp):
     global runner
     runner = MyTests(_app)
     runner.run()
-    pass
 
 
 def on_route_changed(page, parts):
