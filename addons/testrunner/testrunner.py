@@ -48,12 +48,16 @@ class TestRunner:
 
     def run(self):
         self._before_tests()
-        methods = inspect.getmembers(self.__class__, predicate=inspect.isfunction)
+        methods = self._get_test_methods()
         for name, f in methods:
             if not name.startswith("test_"):
                 continue
             self._run_test(f)
         self._after_tests()
+
+    def _get_test_methods(self):
+        methods = inspect.getmembers(self.__class__, predicate=inspect.isfunction)
+        return methods
 
     def _run_test(self, f):
         print(f"================================= {f.__name__}")
