@@ -10,8 +10,9 @@ def on_load(_app: LeftApp):
 
 
 def on_app_ready(_app: LeftApp):
+    from .tests import MyTests
     global runner
-    runner = TestRunner(_app)
+    runner = MyTests(_app)
     runner.run()
     pass
 
