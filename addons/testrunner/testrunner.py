@@ -39,7 +39,7 @@ class TestRunner:
         pass
 
     def _before_tests(self):
-        pass
+        self.results = []
 
     def _after_tests(self):
         self._reset_database()
@@ -50,13 +50,12 @@ class TestRunner:
         self._before_tests()
         methods = self._get_test_methods()
         for name, f in methods:
-            if not name.startswith("test_"):
-                continue
             self._run_test(f)
         self._after_tests()
 
     def _get_test_methods(self):
         methods = inspect.getmembers(self.__class__, predicate=inspect.isfunction)
+        methods = list(filter(lambda t: t[0].startswith("test_"), methods))
         return methods
 
     def _run_test(self, f):
