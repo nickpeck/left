@@ -34,8 +34,8 @@ class ResultsView(LeftView):
             rows=[
                 ft.DataRow(cells=[
                     ft.DataCell(ft.Text(r.test_name)),
-                    ft.DataCell(ft.ElevatedButton(r.passed, color=ft.Colors.GREEN if r.passed else ft.Colors.RED)),
-                    ft.DataCell(ft.Text(r.stacktrace))
+                    ft.DataCell(ft.ElevatedButton(str(r.passed), color=ft.Colors.GREEN if r.passed else ft.Colors.RED)),
+                    ft.DataCell(ft.Text(r.stacktrace, selectable=True))
                 ]) for r in results
             ],
             expand=True
