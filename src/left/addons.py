@@ -20,7 +20,7 @@ class Addons:
         addon_paths = os.environ.get("LEFT_ADDON_PATH", "addons").split(';')
         for addon_path in addon_paths:
             if not os.path.exists(addon_path):
-                return addons
+                continue
             sys.path.append(addon_path)
             for _, folder, _ in os.walk(addon_path):
                 if len(folder) == 0:
