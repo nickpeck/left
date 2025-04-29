@@ -29,12 +29,14 @@ class ResultsView(LeftView):
             columns=[
                 ft.DataColumn(ft.Text("test name")),
                 ft.DataColumn(ft.Text("passed")),
+                ft.DataColumn(ft.Text("duration")),
                 ft.DataColumn(ft.Text("traceback"))
             ],
             rows=[
                 ft.DataRow(cells=[
                     ft.DataCell(ft.Text(r.test_name)),
                     ft.DataCell(ft.ElevatedButton(str(r.passed), color=ft.Colors.GREEN if r.passed else ft.Colors.RED)),
+                    ft.DataCell(ft.Text(r.duration)),
                     ft.DataCell(ft.Text(r.stacktrace, selectable=True))
                 ]) for r in results
             ],

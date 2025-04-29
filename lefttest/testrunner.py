@@ -1,5 +1,5 @@
 import inspect
-import time
+from time import sleep, perf_counter
 import traceback
 from typing import List
 
@@ -60,14 +60,18 @@ class TestRunner:
     def _run_test(self, f):
         print(f"================================= {f.__name__}")
         self._before_test()
+        t = perf_counter()
+        res = None
         try:
             f(self)
             print("PASSED")
-            self.results.append(TestResult(test_name=f.__name__, passed=True, stacktrace=""))
+            res = TestResult(test_name=f.__name__, passed=True, stacktrace="")
         except Exception:
             print("FAILED")
-            self.results.append(TestResult(test_name=f.__name__, passed=False, stacktrace=traceback.format_exc()))
+            res = TestResult(test_name=f.__name__, passed=False, stacktrace=traceback.format_exc())
         finally:
+            res.duration = perf_counter() - t
+            self.results.append(res)
             self._after_test()
 
     def _wait_for_route(self, route, max_time=5):
@@ -76,4 +80,4 @@ class TestRunner:
             if time_awaited >= max_time:
                 raise TimeoutError(f"Timeout waiting for {route}")
             time_awaited = time_awaited + 0.1
-            time.sleep(0.1)
+            sleep(0.1)
