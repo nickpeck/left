@@ -3,7 +3,7 @@ Automated tests. These should be run using
 python -m lefttest sampleapp sampleapp.tests
 """
 
-from lefttest.addon.testrunner import TestRunner
+from lefttest.testrunner import TestRunner
 import flet as ft
 
 

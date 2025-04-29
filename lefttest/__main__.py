@@ -15,13 +15,14 @@ def print_usage_and_exit():
     Usage:
     python -m lefttest <app_module> <test_module>
     
-    eg. python -m lefttest sampleapp sampleapp.tests
-    """)
+    eg. python -m lefttest sampleapp sampleapp.tests""")
+    exit(1)
 
+
+if len(sys.argv) < 2:
+    print_usage_and_exit()
 
 app_module = sys.argv[1]
-
-print("app_module", app_module)
 
 if not os.environ.get('LEFT_TESTRUNNER_MODULE'):
     os.environ['LEFT_TESTRUNNER_MODULE'] = sys.argv[2]

@@ -12,7 +12,6 @@ class Addons:
 
     def __init__(self):
         self.addons = self.load_addons()
-        self.call_addon_hook("on_load", self)
 
     @staticmethod
     def load_addons():

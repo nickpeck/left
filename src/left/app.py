@@ -28,6 +28,7 @@ class LeftApp:
         self.router_func = router_func
         self.view_pop_observers = []
         self.addons = Addons()
+        self.addons.call_addon_hook('on_load', self)
         self.pre_startup_hook = pre_startup_hook
         self.splash_screen = self._load_splashscreen() if self.opts.get("splash_image") else None
         ft.app(target=self, view=self.opts.get("flet_mode", ft.AppView.FLET_APP))

@@ -1,24 +1,20 @@
 import inspect
 import time
 import traceback
+from typing import List
 
+from lefttest.testresult import TestResult
 from left import LeftApp
-
-from left.database.tinydbservice import TinyDBService
 
 
 class TestRunner:
-    results = []
+    results: List[TestResult] = []
     route: str = None
     app: LeftApp
 
     def __init__(self, app: LeftApp):
         self.app = app
         self._wrap_route_change_handler()
-        self._setup_test_db()
-
-    def _setup_test_db(self):
-        self.app.services["database"] = TinyDBService("testing_db.json", write_through=False)
 
     def _wrap_route_change_handler(self):
         existing_handler = self.app.page.on_route_change
@@ -43,8 +39,6 @@ class TestRunner:
 
     def _after_tests(self):
         self._reset_database()
-        self.app.page.go("/tests/results")
-        self.app.page.update()
 
     def go(self, route: str):
         self.app.page.go(route)
@@ -56,6 +50,7 @@ class TestRunner:
         for name, f in methods:
             self._run_test(f)
         self._after_tests()
+        return self.results
 
     def _get_test_methods(self):
         methods = inspect.getmembers(self.__class__, predicate=inspect.isfunction)
@@ -68,11 +63,10 @@ class TestRunner:
         try:
             f(self)
             print("PASSED")
-            self.results.append(f"{f.__name__}       PASSED")
+            self.results.append(TestResult(test_name=f.__name__, passed=True, stacktrace=""))
         except Exception:
-            traceback.print_exc()
             print("FAILED")
-            self.results.append(f"{f.__name__}       FAILED")
+            self.results.append(TestResult(test_name=f.__name__, passed=False, stacktrace=traceback.format_exc()))
         finally:
             self._after_test()
 
