@@ -46,6 +46,10 @@ class TestRunner:
         self.app.page.go("/tests/results")
         self.app.page.update()
 
+    def go(self, route: str):
+        self.app.page.go(route)
+        self._wait_for_route(route)
+
     def run(self):
         self._before_tests()
         methods = self._get_test_methods()

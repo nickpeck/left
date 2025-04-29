@@ -10,18 +10,15 @@ import flet as ft
 class MyTests(TestRunner):
 
     def test_create_page_title(self):
-        self.app.page.go("/page/create")
-        self._wait_for_route("/page/create")
+        self.go("/page/create")
         assert self.app.page.views[-1].appbar.title.value == 'Create a page'
 
     def test_index_page_title(self):
-        self.app.page.go("/")
-        self._wait_for_route("/")
+        self.go("/")
         assert self.app.page.views[-1].appbar.title.value == 'List Pages'
 
     def test_create_page(self):
-        self.app.page.go("/page/create")
-        self._wait_for_route("/page/create")
+        self.go("/page/create")
         title: ft.Textfield = self.app.page.views[1].controls[1]
         text: ft.Textfield = self.app.page.views[1].controls[2]
         button: ft.ElevatedButton = self.app.page.views[1].controls[3]
