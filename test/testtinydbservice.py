@@ -2,7 +2,8 @@ import unittest
 from unittest import TestCase
 from tinyrecord import transaction
 
-from left.database.tinydbservice import TinyDBService, KeyNotExists
+from left.database.documentdbresource import KeyNotExists
+from left.database.tinydbservice.tinydbservice import TinyDBService
 
 
 class TestTinyDBService(TestCase):
