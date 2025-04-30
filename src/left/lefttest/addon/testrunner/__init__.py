@@ -31,7 +31,6 @@ def on_app_ready(app: LeftApp):
 
 
 def on_route_changed(page, parts):
-    global runner
     match parts:
         case ['tests', 'results']:
             ResultsController(page).results(results)
