@@ -25,7 +25,7 @@ class TestRunner:
         self.app.page.on_route_change = _wrapped_handler
 
     def _reset_database(self):
-        self.app.services["database"].drop_tables()
+        self.app.services["database"].db.drop_tables()
         self.app.services["database"].flush()
 
     def _before_test(self):
