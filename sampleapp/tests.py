@@ -3,14 +3,14 @@ Automated tests. These should be run using
 python -m lefttest sampleapp sampleapp.tests
 """
 
-from lefttest.testrunner import TestRunner
+from left.lefttest.testrunner import TestRunner
 import flet as ft
 
 
 class MyTests(TestRunner):
 
     def test_create_page_title(self):
-        self.go("/page/create")
+        self.go("/page/create")  # use TestRunner.go to change the page route and block until rendered
         assert self.app.page.views[-1].appbar.title.value == 'Create a page'
 
     def test_index_page_title(self):

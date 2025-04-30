@@ -3,7 +3,7 @@ from time import sleep, perf_counter
 import traceback
 from typing import List
 
-from lefttest.testresult import TestResult
+from left.lefttest.testresult import TestResult
 from left import LeftApp
 
 

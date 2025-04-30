@@ -5,7 +5,7 @@ from inspect import getmembers, isclass
 from left import LeftApp
 from left.database.tinydbservice import TinyDBService
 from .controller import ResultsController
-from lefttest.testrunner import TestRunner
+from left.lefttest.testrunner import TestRunner
 
 runner: TestRunner = None
 results: dict = {}

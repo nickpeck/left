@@ -15,6 +15,10 @@ description = "A Minimalist Flet Framework"
 readme = "README.md"
 license = {file = "LICENSE"}
 
+[project.scripts]
+lefttest = "left.lefttest:main"
+lt = "left.lefttest:main"
+
 [project.urls]
 Repository = "https://github.com/nickpeck/left.git"
 

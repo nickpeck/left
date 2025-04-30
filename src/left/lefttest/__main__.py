@@ -19,15 +19,13 @@ def print_usage_and_exit():
     exit(1)
 
 
-if len(sys.argv) < 2:
+if len(sys.argv) < 3:
     print_usage_and_exit()
 
 app_module = sys.argv[1]
-
-if not os.environ.get('LEFT_TESTRUNNER_MODULE'):
-    os.environ['LEFT_TESTRUNNER_MODULE'] = sys.argv[2]
-
+os.environ['LEFT_TESTRUNNER_MODULE'] = sys.argv[2]
 addon_path = os.environ.get("LEFT_ADDON_PATH", '')
 test_runner_addon_dir = os.path.join(get_mod_path(), 'addon')
 os.environ["LEFT_ADDON_PATH"] = ";".join([addon_path, test_runner_addon_dir]) if addon_path else test_runner_addon_dir
+sys.path.append(os.getcwd())
 runpy.run_module(app_module)

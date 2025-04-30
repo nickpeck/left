@@ -239,3 +239,21 @@ def on_route_changed(page, parts):
     pass
 
 ```
+
+## Test Runner
+
+left now includes a simple test runner for creating test cases to be executed against the application UI. This
+is intended for tests of the application as a whole. (Unit tests should be carried out using a library such as
+unittest or pytest)
+
+Tests should extend left.lefttest.TestRunner (See sampleapp/tests.py for a full example).
+
+A command-line tool 'lefttest' or 'lt' should be available
+
+How this works under the hood:
+- lefttest launches an instance of your application with the lefttest.addon inserted at runtime.
+- lefttest sets the test module as LEFT_TESTRUNNER_MODULE for the duration of the application run.
+- when the application is ready, the addon loads any instances of the TestRunner class found in LEFT_TESTRUNNER_MODULE 
+and executes these.
+- The addon replaces the app's database service with a temporary tinydb instance 'testing_db.json'
+- Once tests have completed, the addon navigates to a view where test results are displayed.

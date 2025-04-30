@@ -1,5 +1,5 @@
 from typing import List
-from lefttest.testresult import TestResult
+from left.lefttest.testresult import TestResult
 
 from left import LeftView
 from left.helpers import get_page
