@@ -4,7 +4,7 @@ from unittest import TestCase
 from typing import List
 from io import StringIO
 
-from left.database.readonlydbservice import ReadOnlyJSONDBService
+from left.database.readonlydbservice.readonlydbservice import ReadOnlyJSONDBService
 
 
 class TestTinyDBService(TestCase):
