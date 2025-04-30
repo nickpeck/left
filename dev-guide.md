@@ -248,7 +248,13 @@ unittest or pytest)
 
 Tests should extend left.lefttest.TestRunner (See sampleapp/tests.py for a full example).
 
-A command-line tool 'lefttest' or 'lt' should be available
+A command-line tool 'lefttest' should be available, which takes the application module and the module containing
+tests to run. for example, to run the tests contained in the demo app against that app:
+app, use:
+
+```
+lefttest sampleapp sampleapp.tests
+```
 
 How this works under the hood:
 - lefttest launches an instance of your application with the lefttest.addon inserted at runtime.
