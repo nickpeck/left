@@ -3,7 +3,7 @@ import setuptools
 
 setuptools.setup(
     name='left',
-    version='0.0.8',
+    version='0.0.9',
     license='LICENSE',
     author='nickpeck',
     author_email='',
