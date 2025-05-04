@@ -21,7 +21,7 @@ other database or API implementations could be built that extend left.database.d
 
 ```python
 from left import LeftApp
-from left.database.tinydbservice import TinyDBService
+from left.database import TinyDBService
 
 services = {
      "database": TinyDBService("db.json")
@@ -230,8 +230,12 @@ well as an 'on_route_changed' function, that will be executed after the main app
 
 ```python
 # addons/myaddonmodule/__init__.py
-def on_load(_app: LeftApp):
+def on_load(app: LeftApp):
     # any actions to be taken on load, ie storing settings in the db
+    pass
+
+def on_app_ready(app: LeftApp):
+    # any actions to be taken once the app has finished initializing
     pass
 
 def on_route_changed(page, parts):
